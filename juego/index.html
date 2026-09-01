@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Juego educativo para repasar animales vertebrados e invertebrados, con voz, dibujos y evaluación. Hecho para Antonela.">
+<meta name="theme-color" content="#BEE7FB">
+<title>Vertebrados e Invertebrados con Antonela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;700;900&display=swap">
+<style>
+:root{
+  --cielo:#BEE7FB; --cielo2:#EAF7FF; --pasto:#A9DE90; --pasto2:#79C75B;
+  --crema:#FFFBF2; --papel:#FFF3DC; --tinta:#2A2118; --tinta-suave:#6B5B4A;
+  --sol:#FFC53D; --coral:#FF6B4A; --azul:#2F7FD4; --azul-hondo:#1B4F86;
+  --uva:#8E5BD8; --verde:#1E9E63; --rojo:#E04B4B;
+  --borde:#2A2118;
+  --sombra:0 10px 0 rgba(42,33,24,.16);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:var(--tinta); background:var(--cielo2);
+  background-image:linear-gradient(180deg,var(--cielo) 0%,var(--cielo2) 52%,var(--pasto) 52%,var(--pasto2) 100%);
+  background-attachment:fixed;
+  -webkit-tap-highlight-color:transparent; overflow:hidden;
+}
+h1,h2,h3,.btn,.marca{font-family:"Baloo 2","Nunito",system-ui,sans-serif;font-weight:800;letter-spacing:.2px}
+
+/* ---------- estructura de pantallas ---------- */
+#app{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:10px}
+.pantalla{
+  position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:12px 12px calc(12px + env(safe-area-inset-bottom));gap:10px
+}
+.pantalla.activa{display:flex;animation:entra .35s ease-out both}
+@keyframes entra{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.marco{
+  width:min(560px,100%);max-height:100%;display:flex;flex-direction:column;gap:10px;
+  background:var(--crema);border:4px solid var(--borde);border-radius:30px;
+  box-shadow:0 14px 0 rgba(42,33,24,.18);padding:14px;overflow:hidden
+}
+
+/* ---------- escenario del dibujo ---------- */
+.escena{
+  position:relative;flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--papel);border:3px dashed #E4C89A;border-radius:22px;padding:8px;cursor:pointer
+}
+.escena svg{height:100%;width:auto;max-height:230px;max-width:100%;display:block;filter:drop-shadow(0 6px 0 rgba(42,33,24,.12))}
+.escena.mini svg{max-height:120px}
+.escena .grande{max-height:200px}
+.oreja{position:absolute;right:10px;bottom:8px;font-size:20px;opacity:.55}
+.pop{animation:pop .45s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes pop{from{transform:scale(.6) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
+.flota{animation:flota 3.2s ease-in-out infinite}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ---------- textos ---------- */
+.titulo{font-size:clamp(26px,7vw,40px);line-height:1.05;margin:0;text-align:center;text-wrap:balance;color:var(--azul-hondo)}
+.titulo em{font-style:normal;color:var(--coral)}
+.nombre{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(24px,6.5vw,34px);text-align:center;margin:0;line-height:1.1}
+.dato{font-size:clamp(15px,4vw,18px);font-weight:700;text-align:center;margin:0;color:var(--tinta-suave);line-height:1.35;max-width:44ch;align-self:center}
+.chapa{
+  align-self:center;display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;
+  border:3px solid var(--borde);font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(14px,3.8vw,17px);
+  text-transform:uppercase;letter-spacing:.6px;color:#fff;background:var(--azul)
+}
+.chapa.inv{background:var(--coral)}
+
+/* ---------- botones ---------- */
+.btn{
+  appearance:none;flex-wrap:wrap;text-align:center;line-height:1.1;border:4px solid var(--borde);border-radius:24px;background:var(--sol);color:var(--tinta);
+  font-size:clamp(20px,5.5vw,26px);padding:16px 18px;min-height:74px;width:100%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:var(--sombra);
+  transition:transform .08s ease,box-shadow .08s ease
+}
+.btn:active{transform:translateY(8px);box-shadow:0 2px 0 rgba(42,33,24,.16)}
+.btn:focus-visible{outline:5px solid var(--uva);outline-offset:4px}
+.btn.azul{background:var(--azul);color:#fff}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.verde{background:var(--verde);color:#fff}
+.btn.crema{background:#fff}
+.btn svg{height:44px;width:44px;flex:0 0 auto}
+.btn .sub{display:block;font-family:"Nunito";font-weight:700;font-size:13px;opacity:.85}
+.opciones{display:flex;flex-direction:column;gap:10px}
+.opciones.dos{flex-direction:row}
+.opciones.dos .btn{flex-direction:column;gap:4px;min-height:120px;font-size:clamp(15px,4.4vw,20px);line-height:1.1;padding:10px}
+.opciones.dos .btn svg{height:52px;width:52px}
+.opciones.tres .btn{min-height:66px;font-size:clamp(17px,4.6vw,21px);justify-content:flex-start;padding:8px 16px}
+.opciones.tres .btn svg{height:48px;width:48px}
+.btn.bien{background:var(--verde);color:#fff;animation:tiembla-si .4s}
+.btn.mal{background:var(--rojo);color:#fff;animation:tiembla-no .4s}
+.btn[disabled]{cursor:default}
+.btn.apagado{opacity:.35}
+@keyframes tiembla-si{0%,100%{transform:none}50%{transform:scale(1.06)}}
+@keyframes tiembla-no{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* ---------- barra superior ---------- */
+.barra{display:flex;align-items:center;gap:8px;min-height:44px}
+.icono{
+  appearance:none;border:3px solid var(--borde);background:#fff;border-radius:16px;width:46px;height:46px;
+  font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 0 rgba(42,33,24,.16);flex:0 0 auto
+}
+.icono:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(42,33,24,.16)}
+.icono:focus-visible{outline:4px solid var(--uva);outline-offset:3px}
+.pasos{flex:1;display:flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap}
+.punto{width:12px;height:12px;border-radius:50%;background:#E3D5BC;border:2px solid rgba(42,33,24,.25)}
+.punto.hecho{background:var(--azul)}
+.punto.ahora{background:var(--sol);transform:scale(1.45)}
+.estrellitas{flex:1;display:flex;gap:4px;justify-content:center;font-size:20px;line-height:1;flex-wrap:wrap}
+.estrellitas span{filter:grayscale(1);opacity:.35}
+.estrellitas span.on{filter:none;opacity:1;animation:pop .4s both}
+.estrellitas span.off{filter:none;opacity:.9}
+
+/* ---------- inicio ---------- */
+.portada{width:min(560px,100%);display:flex;flex-direction:column;align-items:center;gap:14px}
+.cinta{
+  background:var(--crema);border:4px solid var(--borde);border-radius:28px;padding:16px 20px;text-align:center;
+  box-shadow:0 12px 0 rgba(42,33,24,.18);width:100%
+}
+.cinta p{margin:6px 0 0;font-weight:700;color:var(--tinta-suave);font-size:16px}
+.desfile{display:flex;justify-content:center;gap:2px;width:100%;overflow:hidden}
+.desfile svg{height:clamp(62px,17vw,96px);width:auto}
+.desfile .d2{animation-delay:.4s}.desfile .d3{animation-delay:.8s}.desfile .d4{animation-delay:1.2s}
+.firma{font-size:13px;font-weight:700;color:#3b5a3b;text-align:center;margin:0}
+.tablero{display:flex;gap:10px;width:100%}
+.tablero .btn{flex:1 1 0;min-width:0}
+.portada .tablero{flex-direction:column}
+.portada .tablero .btn{min-height:88px}
+
+/* ---------- resultado ---------- */
+.diploma{text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+.marcador{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(44px,14vw,74px);line-height:1;color:var(--azul-hondo)}
+.marcador small{font-size:.42em;color:var(--tinta-suave)}
+.estrellas-fin{font-size:clamp(30px,9vw,46px);letter-spacing:4px;line-height:1}
+.repaso{width:100%;background:var(--papel);border:3px solid #E4C89A;border-radius:18px;padding:10px 12px;
+  font-size:15px;font-weight:700;color:var(--tinta-suave);max-height:26vh;overflow:auto}
+.repaso b{color:var(--tinta)}
+.repaso ul{margin:6px 0 0;padding-left:20px}
+.repaso li{margin:3px 0}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.chip{background:#fff;border:3px solid var(--borde);border-radius:999px;padding:2px 12px;
+  font-family:"Baloo 2",sans-serif;font-weight:800;font-size:clamp(12px,3.4vw,15px)}
+.escena svg{min-width:0}
+.escena.dos svg{max-height:178px;max-width:42vw}
+.escena.mini svg{max-height:118px;max-width:23vw}
+.escena.cinco svg{max-height:94px;max-width:18vw}
+#confeti{position:fixed;inset:0;pointer-events:none;z-index:9}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+@media (max-height:600px){.escena svg{max-height:150px}.btn{min-height:62px;padding:10px}.opciones.dos .btn{min-height:104px}}
+</style>
+</head>
+<body>
+<canvas id="confeti" aria-hidden="true"></canvas>
+<div id="app"></div>
+<script>
+"use strict";
+/* ============================================================
+   DIBUJOS — cada animal está dibujado con vectores dentro del
+   propio archivo: nunca depende de internet ni se rompe la imagen.
+   ============================================================ */
+const D = {};
+
+D.perro = `
+<ellipse cx="22" cy="56" rx="11" ry="26" fill="#A87049" transform="rotate(-22 22 56)"/>
+<ellipse cx="98" cy="56" rx="11" ry="26" fill="#A87049" transform="rotate(22 98 56)"/>
+<circle cx="60" cy="60" r="35" fill="#C98A54"/>
+<ellipse cx="60" cy="78" rx="21" ry="15" fill="#F6E3C6"/>
+<circle cx="47" cy="52" r="5.5" fill="#2A2118"/><circle cx="73" cy="52" r="5.5" fill="#2A2118"/>
+<circle cx="49" cy="50" r="1.9" fill="#fff" stroke="none"/><circle cx="75" cy="50" r="1.9" fill="#fff" stroke="none"/>
+<ellipse cx="60" cy="71" rx="8" ry="5.5" fill="#2A2118"/>
+<path d="M60 77v5"/><path d="M52 84q8 9 16 0" fill="#FF8FA0"/>`;
+
+D.gato = `
+<path d="M33 44 L29 16 L54 31 Z" fill="#F7B44E"/><path d="M87 44 L91 16 L66 31 Z" fill="#F7B44E"/>
+<path d="M36 39 L34 25 L46 33 Z" fill="#FFB3C1" stroke="none"/><path d="M84 39 L86 25 L74 33 Z" fill="#FFB3C1" stroke="none"/>
+<circle cx="60" cy="64" r="33" fill="#F7B44E"/>
+<path d="M40 47q7 7 14 0" stroke-width="3"/><path d="M66 47q7 7 14 0" stroke-width="3"/>
+<ellipse cx="48" cy="62" rx="5" ry="6.5" fill="#2A2118"/><ellipse cx="72" cy="62" rx="5" ry="6.5" fill="#2A2118"/>
+<circle cx="50" cy="59" r="1.8" fill="#fff" stroke="none"/><circle cx="74" cy="59" r="1.8" fill="#fff" stroke="none"/>
+<path d="M54 74h12l-6 7z" fill="#FF8FA0"/>
+<path d="M60 81q-6 7-11 2M60 81q6 7 11 2" stroke-width="3"/>
+<path d="M14 66h16M14 76h16M90 66h16M90 76h16" stroke-width="3"/>`;
+
+D.vaca = `
+<ellipse cx="20" cy="54" rx="13" ry="9" fill="#F6E3C6"/><ellipse cx="100" cy="54" rx="13" ry="9" fill="#F6E3C6"/>
+<path d="M34 36q-9-8-3-15 9 3 11 12z" fill="#F0E4CF"/><path d="M86 36q9-8 3-15-9 3-11 12z" fill="#F0E4CF"/>
+<rect x="26" y="32" width="68" height="60" rx="27" fill="#FFFDF5"/>
+<path d="M36 44q10-8 18 3-7 12-20 5z" fill="#2A2118" stroke="none"/>
+<path d="M92 58q-8 4-8 12 10 4 12-6z" fill="#2A2118" stroke="none"/>
+<circle cx="47" cy="58" r="5" fill="#2A2118"/><circle cx="73" cy="58" r="5" fill="#2A2118"/>
+<circle cx="49" cy="56" r="1.8" fill="#fff" stroke="none"/><circle cx="75" cy="56" r="1.8" fill="#fff" stroke="none"/>
+<ellipse cx="60" cy="80" rx="25" ry="17" fill="#FFB3C1"/>
+<ellipse cx="51" cy="77" rx="3.5" ry="4.5" fill="#B4677A"/><ellipse cx="69" cy="77" rx="3.5" ry="4.5" fill="#B4677A"/>
+<path d="M50 88q10 6 20 0" stroke-width="3"/>`;
+
+D.delfin = `
+<path d="M30 64q-16-16-24-8 5 10 6 14-7 7-1 13 11 2 21-9z" fill="#3E93C8"/>
+<path d="M60 46q4-19 18-20-2 13-8 22z" fill="#3E93C8"/>
+<ellipse cx="62" cy="68" rx="38" ry="22" fill="#5BB4E5" transform="rotate(-8 62 68)"/>
+<ellipse cx="66" cy="80" rx="26" ry="9" fill="#EAF6FF" transform="rotate(-6 66 80)" stroke="none"/>
+<path d="M58 86q-4 16 8 20 10-8 10-20z" fill="#3E93C8"/>
+<path d="M97 58q18 2 21 10-11 7-22 2z" fill="#5BB4E5"/>
+<circle cx="92" cy="56" r="4" fill="#2A2118"/><circle cx="93.5" cy="54.5" r="1.5" fill="#fff" stroke="none"/>
+<path d="M100 68q8 3 13-1" stroke-width="3"/>`;
+
+D.murcielago = `
+<path d="M58 56q-22-24-50-16 10 9 5 17 11-1 11 9 12-7 24 4z" fill="#6B4FA8"/>
+<path d="M62 56q22-24 50-16-10 9-5 17-11-1-11 9-12-7-24 4z" fill="#6B4FA8"/>
+<path d="M46 44l-5-20 18 13z" fill="#7C5CC4"/><path d="M74 44l5-20-18 13z" fill="#7C5CC4"/>
+<ellipse cx="60" cy="66" rx="21" ry="25" fill="#7C5CC4"/>
+<circle cx="52" cy="60" r="6" fill="#FFFDF5"/><circle cx="68" cy="60" r="6" fill="#FFFDF5"/>
+<circle cx="52" cy="61" r="2.8" fill="#2A2118" stroke="none"/><circle cx="68" cy="61" r="2.8" fill="#2A2118" stroke="none"/>
+<path d="M52 76q8 6 16 0" stroke-width="3"/>
+<path d="M55 78l-2 6-3-6zM65 78l2 6 3-6z" fill="#fff" stroke="none"/>`;
+
+D.gallina = `
+<ellipse cx="58" cy="76" rx="33" ry="27" fill="#FFFDF5"/>
+<path d="M50 72q19-9 27 6-15 13-27-6z" fill="#F0E2C8"/>
+<path d="M46 100v9M46 109l-7 6M46 109l7 6M72 100v9M72 109l-7 6M72 109l7 6" stroke="#E8A020" stroke-width="4"/>
+<circle cx="62" cy="42" r="19" fill="#FFFDF5"/>
+<path d="M52 26q3-11 8-1 4-11 8-1 4-9 6 3z" fill="#E04B4B"/>
+<path d="M78 44l15 5-15 6z" fill="#FFC53D"/>
+<path d="M72 54q7 5 1 12-7-3-5-12z" fill="#E04B4B"/>
+<circle cx="70" cy="40" r="4" fill="#2A2118"/><circle cx="71.5" cy="38.5" r="1.4" fill="#fff" stroke="none"/>`;
+
+D.loro = `
+<path d="M54 92l-10 26 20-9 14 11-2-29z" fill="#2F80ED"/>
+<ellipse cx="62" cy="70" rx="27" ry="31" fill="#22A85F"/>
+<path d="M66 56q23 9 16 33-17 6-23-13z" fill="#17864A"/>
+<circle cx="58" cy="38" r="21" fill="#FFC53D"/>
+<path d="M40 32q-17 5-13 15 5 11 15 6-9-9-2-21z" fill="#F2994A"/>
+<circle cx="55" cy="34" r="4.5" fill="#2A2118"/><circle cx="56.5" cy="32.5" r="1.6" fill="#fff" stroke="none"/>
+<path d="M56 100v8M56 108h-6M56 108h6M70 100v8M70 108h-6M70 108h6" stroke="#E8A020" stroke-width="4"/>`;
+
+D.pinguino = `
+<path d="M30 58q-13 18-5 33 11-6 11-23z" fill="#3A3346"/>
+<path d="M90 58q13 18 5 33-11-6-11-23z" fill="#3A3346"/>
+<ellipse cx="60" cy="64" rx="31" ry="39" fill="#3A3346"/>
+<ellipse cx="60" cy="72" rx="21" ry="30" fill="#FFFDF5"/>
+<circle cx="51" cy="46" r="7" fill="#FFFDF5"/><circle cx="69" cy="46" r="7" fill="#FFFDF5"/>
+<circle cx="52" cy="47" r="3.2" fill="#2A2118" stroke="none"/><circle cx="68" cy="47" r="3.2" fill="#2A2118" stroke="none"/>
+<path d="M52 58l16 4-16 5z" fill="#F2994A"/>
+<ellipse cx="45" cy="104" rx="12" ry="6" fill="#F2994A"/><ellipse cx="75" cy="104" rx="12" ry="6" fill="#F2994A"/>`;
+
+D.pez = `
+<path d="M22 60L4 40v40z" fill="#F2994A"/>
+<path d="M56 34q11-14 27-10-5 8-7 13z" fill="#F2994A"/>
+<path d="M56 88q11 13 26 8-6-8-6-13z" fill="#F2994A"/>
+<ellipse cx="62" cy="61" rx="42" ry="28" fill="#FF8A3D"/>
+<path d="M40 36q-8 25 0 49 10 1 13-2-8-22 0-45z" fill="#FFF9F0"/>
+<path d="M76 35q-8 26 0 51 10-3 12-7-7-19 0-38z" fill="#FFF9F0"/>
+<circle cx="93" cy="54" r="7" fill="#FFFDF5"/><circle cx="94" cy="54" r="3.4" fill="#2A2118" stroke="none"/>
+<path d="M99 68q6 3 8-2" stroke-width="3"/>`;
+
+D.tiburon = `
+<path d="M20 62q-9-20-10-28-4 24-2 30-2 8 2 26 3-14 10-24z" fill="#7D96A6"/>
+<path d="M56 40q7-22 21-24-2 14-7 24z" fill="#7D96A6"/>
+<path d="M14 60q26-32 60-25 26 6 34 24-10 16-34 22-34 8-60-21z" fill="#8FA8B8"/>
+<path d="M22 72q30 22 62 9-28 14-62-9z" fill="#EAF0F4" stroke="none"/>
+<path d="M58 82q-6 18 6 22 10-10 10-22z" fill="#7D96A6"/>
+<circle cx="92" cy="54" r="4.5" fill="#2A2118"/><circle cx="93.5" cy="52.5" r="1.5" fill="#fff" stroke="none"/>
+<path d="M82 72q14 8 26-2" stroke-width="3"/>
+<path d="M86 74l3 6 3-6 3 6 3-6" fill="none" stroke="#fff" stroke-width="2.5"/>`;
+
+D.tortuga = `
+<path d="M12 80l-9 5 9 5z" fill="#7BC47F"/>
+<circle cx="102" cy="66" r="13" fill="#7BC47F"/>
+<circle cx="107" cy="62" r="3.6" fill="#2A2118"/><path d="M105 72q6 2 9-2" stroke-width="3"/>
+<rect x="24" y="80" width="20" height="16" rx="8" fill="#7BC47F"/><rect x="70" y="80" width="20" height="16" rx="8" fill="#7BC47F"/>
+<path d="M18 78q3-38 42-38t42 38z" fill="#3E9C5F"/>
+<rect x="14" y="74" width="92" height="14" rx="7" fill="#E8C880"/>
+<path d="M60 44l13 9v14l-13 9-13-9V53z" fill="#2E7D4B"/>
+<path d="M32 66l10-8 6 10-6 8z" fill="#2E7D4B"/><path d="M88 66l-10-8-6 10 6 8z" fill="#2E7D4B"/>`;
+
+D.serpiente = `
+<path d="M22 98q28-18 8-31-19-12 6-25 22-11 52-4" fill="none" stroke="#2A2118" stroke-width="25"/>
+<path d="M22 98q28-18 8-31-19-12 6-25 22-11 52-4" fill="none" stroke="#5FBF52" stroke-width="18"/>
+<circle cx="34" cy="86" r="4" fill="#3B8F33" stroke="none"/><circle cx="26" cy="60" r="4" fill="#3B8F33" stroke="none"/>
+<circle cx="52" cy="44" r="4" fill="#3B8F33" stroke="none"/>
+<ellipse cx="92" cy="38" rx="17" ry="13" transform="rotate(-8 92 38)" fill="#5FBF52"/>
+<circle cx="96" cy="33" r="3.6" fill="#2A2118"/>
+<path d="M108 42l11 3m0 0l-6 4m6-4l-5-6" stroke="#E04B4B" stroke-width="3"/>`;
+
+D.cocodrilo = `
+<path d="M6 88q10-16 32-14l-2 22q-20 4-30-8z" fill="#3E8C59"/>
+<path d="M30 60l6-11 6 11 6-11 6 11 6-11 6 11 6-11 6 11" fill="#3E8C59"/>
+<rect x="24" y="62" width="58" height="30" rx="15" fill="#4CA36A"/>
+<path d="M78 64q34-2 39 11-3 13-39 13z" fill="#4CA36A"/>
+<path d="M82 80h30l-4 7-4-7-4 7-4-7-4 7-4-7-4 7z" fill="#FFFDF5" stroke="none"/>
+<path d="M82 80h32" stroke-width="2.5"/>
+<circle cx="86" cy="58" r="9" fill="#4CA36A"/><circle cx="86" cy="56" r="3.8" fill="#2A2118"/>
+<rect x="30" y="88" width="16" height="14" rx="7" fill="#3E8C59"/><rect x="58" y="88" width="16" height="14" rx="7" fill="#3E8C59"/>`;
+
+D.rana = `
+<path d="M22 86q-16 8-9 20 12 5 19-7z" fill="#5FB03F"/><path d="M98 86q16 8 9 20-12 5-19-7z" fill="#5FB03F"/>
+<ellipse cx="60" cy="74" rx="39" ry="30" fill="#6DC24B"/>
+<ellipse cx="60" cy="86" rx="23" ry="14" fill="#DDF3BE"/>
+<circle cx="40" cy="44" r="15" fill="#6DC24B"/><circle cx="80" cy="44" r="15" fill="#6DC24B"/>
+<circle cx="40" cy="44" r="9" fill="#FFFDF5"/><circle cx="80" cy="44" r="9" fill="#FFFDF5"/>
+<circle cx="41" cy="45" r="4.4" fill="#2A2118" stroke="none"/><circle cx="79" cy="45" r="4.4" fill="#2A2118" stroke="none"/>
+<path d="M38 74q22 16 44 0" stroke-width="3.4"/>
+<circle cx="34" cy="80" r="5" fill="#F7A6B0" stroke="none" opacity=".8"/><circle cx="86" cy="80" r="5" fill="#F7A6B0" stroke="none" opacity=".8"/>`;
+
+D.salamandra = `
+<path d="M14 88q20-24 42-11 22 13 42-13" fill="none" stroke="#2A2118" stroke-width="23"/>
+<path d="M14 88q20-24 42-11 22 13 42-13" fill="none" stroke="#F2994A" stroke-width="16"/>
+<path d="M34 86l-8 16M52 84l4 18M76 74l-6 18M92 70l8 16" stroke="#2A2118" stroke-width="6"/>
+<ellipse cx="102" cy="58" rx="15" ry="12" fill="#F2994A"/>
+<circle cx="106" cy="54" r="3.5" fill="#2A2118"/><path d="M104 64q7 2 10-2" stroke-width="3"/>
+<circle cx="42" cy="82" r="4" fill="#8A4B1E" stroke="none"/><circle cx="66" cy="80" r="4" fill="#8A4B1E" stroke="none"/>
+<circle cx="86" cy="70" r="4" fill="#8A4B1E" stroke="none"/>`;
+
+D.mariposa = `
+<path d="M60 64q-30-36-49-15-14 16 8 28-18 12 0 25 21 16 41-12z" fill="#F2679B"/>
+<path d="M60 64q30-36 49-15 14 16-8 28 18 12 0 25-21 16-41-12z" fill="#F2679B"/>
+<circle cx="30" cy="48" r="7" fill="#FFC53D" stroke="none"/><circle cx="90" cy="48" r="7" fill="#FFC53D" stroke="none"/>
+<circle cx="32" cy="84" r="5" fill="#6BC6E8" stroke="none"/><circle cx="88" cy="84" r="5" fill="#6BC6E8" stroke="none"/>
+<ellipse cx="60" cy="68" rx="7" ry="27" fill="#6B4FA8"/>
+<circle cx="60" cy="36" r="9" fill="#6B4FA8"/>
+<path d="M56 29q-7-13-14-15M64 29q7-13 14-15" stroke-width="3"/>
+<circle cx="41" cy="13" r="3.5" fill="#6B4FA8"/><circle cx="79" cy="13" r="3.5" fill="#6B4FA8"/>`;
+
+D.hormiga = `
+<path d="M50 78q-12 14-8 26M56 80q-4 16 2 24M64 78q10 14 8 26M46 60q-16-6-26 2M60 56q-6-14-2-24M74 58q14-8 26-4" stroke-width="5"/>
+<ellipse cx="30" cy="70" rx="20" ry="17" fill="#8B3A2E"/>
+<circle cx="58" cy="66" r="13" fill="#8B3A2E"/>
+<circle cx="86" cy="58" r="17" fill="#8B3A2E"/>
+<path d="M84 42q-2-16-14-20M96 44q6-14 18-16" stroke-width="3.4"/>
+<circle cx="70" cy="18" r="4" fill="#8B3A2E"/><circle cx="116" cy="26" r="4" fill="#8B3A2E"/>
+<circle cx="90" cy="54" r="5" fill="#FFFDF5"/><circle cx="90" cy="55" r="2.4" fill="#2A2118" stroke="none"/>
+<path d="M88 66q7 4 12-1" stroke-width="3"/>`;
+
+D.abeja = `
+<ellipse cx="50" cy="40" rx="20" ry="12" transform="rotate(-22 50 40)" fill="#DCF1FB" opacity=".95"/>
+<ellipse cx="76" cy="36" rx="18" ry="11" transform="rotate(14 76 36)" fill="#DCF1FB" opacity=".95"/>
+<path d="M22 68l-16 4 16 5z" fill="#2A2118"/>
+<ellipse cx="58" cy="70" rx="35" ry="26" fill="#FFC53D"/>
+<path d="M50 46q-9 24 0 48h13q-9-24 0-48z" fill="#2A2118" stroke="none"/>
+<path d="M74 48q-8 22 0 44 8-2 11-6-7-16 0-32z" fill="#2A2118" stroke="none"/>
+<path d="M38 94l-6 12M58 96l0 12M78 92l6 12" stroke-width="4"/>
+<circle cx="96" cy="62" r="16" fill="#2A2118"/>
+<circle cx="99" cy="58" r="5.5" fill="#FFFDF5" stroke="none"/><circle cx="99" cy="59" r="2.6" fill="#2A2118" stroke="none"/>
+<path d="M92 46q-3-14 4-20M104 48q6-12 14-14" stroke-width="3"/>
+<path d="M96 72q8 3 13-3" stroke="#FFFDF5" stroke-width="3"/>`;
+
+D.mariquita = `
+<path d="M30 60q-16-10-26-4M28 74H8M32 88q-14 8-18 18M90 60q16-10 26-4M92 74h20M88 88q14 8 18 18" stroke-width="5"/>
+<circle cx="60" cy="34" r="16" fill="#2A2118"/>
+<path d="M52 22q-6-12-14-14M68 22q6-12 14-14" stroke-width="3.4"/>
+<circle cx="38" cy="6" r="4" fill="#2A2118"/><circle cx="82" cy="6" r="4" fill="#2A2118"/>
+<circle cx="54" cy="30" r="4" fill="#FFFDF5" stroke="none"/><circle cx="66" cy="30" r="4" fill="#FFFDF5" stroke="none"/>
+<ellipse cx="60" cy="74" rx="40" ry="34" fill="#E04B4B"/>
+<path d="M60 40v68" stroke-width="3.4"/>
+<circle cx="40" cy="62" r="7.5" fill="#2A2118" stroke="none"/><circle cx="80" cy="62" r="7.5" fill="#2A2118" stroke="none"/>
+<circle cx="44" cy="90" r="6.5" fill="#2A2118" stroke="none"/><circle cx="76" cy="90" r="6.5" fill="#2A2118" stroke="none"/>`;
+
+D.arana = `
+<path d="M38 62q-18-14-32-8M36 74q-20-2-30 10M40 86q-16 6-22 20M46 94q-8 10-8 22M82 62q18-14 32-8M84 74q20-2 30 10M80 86q16 6 22 20M74 94q8 10 8 22" stroke-width="5"/>
+<ellipse cx="60" cy="76" rx="28" ry="24" fill="#4A3A63"/>
+<path d="M46 62q14 8 28 0" stroke="#6B5A85" stroke-width="3"/>
+<circle cx="60" cy="46" r="17" fill="#5C4A78"/>
+<circle cx="53" cy="42" r="5.5" fill="#FFFDF5" stroke="none"/><circle cx="67" cy="42" r="5.5" fill="#FFFDF5" stroke="none"/>
+<circle cx="53" cy="43" r="2.6" fill="#2A2118" stroke="none"/><circle cx="67" cy="43" r="2.6" fill="#2A2118" stroke="none"/>
+<circle cx="46" cy="52" r="3" fill="#FFFDF5" stroke="none"/><circle cx="74" cy="52" r="3" fill="#FFFDF5" stroke="none"/>
+<path d="M53 55q7 5 14 0" stroke-width="3"/>`;
+
+D.caracol = `
+<path d="M16 94q-6-22 16-27 15-3 26 4l26 13q-2 12-16 12H24q-6 0-8-2z" fill="#CFE08A"/>
+<path d="M26 70l-5-19M40 68l5-19" stroke-width="4"/>
+<circle cx="20" cy="46" r="6" fill="#CFE08A"/><circle cx="46" cy="46" r="6" fill="#CFE08A"/>
+<circle cx="20" cy="46" r="2.4" fill="#2A2118" stroke="none"/><circle cx="46" cy="46" r="2.4" fill="#2A2118" stroke="none"/>
+<path d="M28 84q9 6 17 0" stroke-width="3"/>
+<circle cx="72" cy="54" r="30" fill="#E8A33D"/>
+<path d="M72 54a10 10 0 1 1-9-10 21 21 0 1 0 20 21" fill="none" stroke-width="4"/>`;
+
+D.pulpo = `
+<g fill="none" stroke-linecap="round">
+<path d="M28 78q-12 16-4 30M46 84q-8 18-2 30M74 84q8 18 2 30M92 78q12 16 4 30M60 88v30" stroke="#2A2118" stroke-width="19"/>
+<path d="M28 78q-12 16-4 30M46 84q-8 18-2 30M74 84q8 18 2 30M92 78q12 16 4 30M60 88v30" stroke="#C05CB0" stroke-width="13"/>
+</g>
+<path d="M20 68q0-40 40-40t40 40q0 12-8 16H28q-8-4-8-16z" fill="#C05CB0"/>
+<circle cx="46" cy="56" r="11" fill="#FFFDF5"/><circle cx="74" cy="56" r="11" fill="#FFFDF5"/>
+<circle cx="47" cy="58" r="5" fill="#2A2118" stroke="none"/><circle cx="75" cy="58" r="5" fill="#2A2118" stroke="none"/>
+<path d="M52 76q8 6 16 0" stroke-width="3"/>
+<circle cx="32" cy="52" r="5" fill="#E4A0D8" stroke="none"/><circle cx="88" cy="52" r="5" fill="#E4A0D8" stroke="none"/>`;
+
+D.cangrejo = `
+<path d="M30 84l-18 12M32 94l-14 16M88 84l18 12M86 94l14 16" stroke-width="5"/>
+<path d="M26 58q-20-10-24 4 4 14 22 8z" fill="#D9482A"/><path d="M8 60l12 4" stroke-width="3"/>
+<path d="M94 58q20-10 24 4-4 14-22 8z" fill="#D9482A"/><path d="M112 60l-12 4" stroke-width="3"/>
+<ellipse cx="60" cy="74" rx="35" ry="25" fill="#E85C3A"/>
+<path d="M46 52v-14M74 52v-14" stroke-width="4"/>
+<circle cx="46" cy="32" r="8" fill="#FFFDF5"/><circle cx="74" cy="32" r="8" fill="#FFFDF5"/>
+<circle cx="46" cy="33" r="3.6" fill="#2A2118" stroke="none"/><circle cx="74" cy="33" r="3.6" fill="#2A2118" stroke="none"/>
+<path d="M44 76q16 12 32 0" stroke-width="3.4"/>`;
+
+D.lombriz = `
+<path d="M14 98q4-26 26-26 24 0 26-20 2-18 22-18" fill="none" stroke="#2A2118" stroke-width="26"/>
+<path d="M14 98q4-26 26-26 24 0 26-20 2-18 22-18" fill="none" stroke="#F09AA8" stroke-width="19"/>
+<path d="M24 88l-8-4M42 74v-9M60 66l6-7M76 44l-2-9" stroke="#D3717F" stroke-width="3"/>
+<circle cx="90" cy="34" r="12" fill="#F09AA8"/>
+<circle cx="88" cy="30" r="3.2" fill="#2A2118"/><circle cx="98" cy="32" r="3.2" fill="#2A2118"/>
+<path d="M88 40q7 4 12-2" stroke-width="3"/>`;
+
+D.estrella = `
+<path d="M60 12l14.1 32.6L109.5 47.9 82.8 71.4l7.8 34.7L60 88l-30.6 18.1 7.8-34.7L10.5 47.9l35.4-3.3z" fill="#F2994A"/>
+<circle cx="60" cy="52" r="4" fill="#D97A28" stroke="none"/><circle cx="48" cy="66" r="4" fill="#D97A28" stroke="none"/>
+<circle cx="72" cy="66" r="4" fill="#D97A28" stroke="none"/><circle cx="60" cy="80" r="4" fill="#D97A28" stroke="none"/>
+<circle cx="50" cy="46" r="4.6" fill="#2A2118"/><circle cx="70" cy="46" r="4.6" fill="#2A2118"/>
+<path d="M52 60q8 7 16 0" stroke-width="3"/>`;
+
+/* --- iconos de concepto --- */
+D.columna = `
+<path d="M60 14v92" stroke-width="9"/>
+<circle cx="60" cy="16" r="11" fill="#FFFDF5"/><circle cx="60" cy="34" r="11" fill="#FFFDF5"/>
+<circle cx="60" cy="52" r="11" fill="#FFFDF5"/><circle cx="60" cy="70" r="11" fill="#FFFDF5"/>
+<circle cx="60" cy="88" r="11" fill="#FFFDF5"/><circle cx="60" cy="104" r="11" fill="#FFFDF5"/>
+<path d="M49 40q-22 2-28 16M71 40q22 2 28 16M49 76q-20 2-26 14M71 76q20 2 26 14" stroke-width="6"/>`;
+
+D.hueso = `
+<path d="M30 42a13 13 0 1 1 13 17h34a13 13 0 1 1 13-17 13 13 0 1 1-13-17H43a13 13 0 1 1-13 17z" fill="#FFFDF5"/>`;
+
+D.blandito = `
+<path d="M18 78q0-48 42-48t42 48q0 14-14 14-9 0-12-6-4 8-14 8t-14-8q-3 6-12 6-18 0-18-14z" fill="#FF9E7A"/>
+<circle cx="47" cy="60" r="9" fill="#FFFDF5"/><circle cx="73" cy="60" r="9" fill="#FFFDF5"/>
+<circle cx="48" cy="62" r="4.2" fill="#2A2118" stroke="none"/><circle cx="74" cy="62" r="4.2" fill="#2A2118" stroke="none"/>
+<path d="M52 76q8 7 16 0" stroke-width="3"/>`;
+
+D.nina = `
+<circle cx="18" cy="62" r="15" fill="#4A2E22"/><circle cx="102" cy="62" r="15" fill="#4A2E22"/>
+<circle cx="60" cy="58" r="37" fill="#4A2E22"/>
+<circle cx="60" cy="64" r="29" fill="#F7C9A2"/>
+<path d="M32 54q9-20 28-20t28 20q-28-9-56 0z" fill="#4A2E22"/>
+<circle cx="49" cy="64" r="4.6" fill="#2A2118"/><circle cx="71" cy="64" r="4.6" fill="#2A2118"/>
+<circle cx="50.5" cy="62.5" r="1.6" fill="#fff" stroke="none"/><circle cx="72.5" cy="62.5" r="1.6" fill="#fff" stroke="none"/>
+<circle cx="40" cy="74" r="5" fill="#F7A6B0" stroke="none" opacity=".85"/><circle cx="80" cy="74" r="5" fill="#F7A6B0" stroke="none" opacity=".85"/>
+<path d="M50 78q10 10 20 0" stroke-width="3.4"/>
+<circle cx="20" cy="42" r="7" fill="#FF6B4A"/>`;
+
+D.escorpion = `
+<path d="M42 68q-18 2-24-8M78 68q18 2 24-8M42 78q-18 6-22 18M78 78q18 6 22 18M46 90q-8 10-8 20M74 90q8 10 8 20" stroke-width="5"/>
+<path d="M36 42q-16-12-24-2 4 13 20 13z" fill="#C4661F"/><path d="M14 44l10 4" stroke-width="3"/>
+<path d="M84 42q16-12 24-2-4 13-20 13z" fill="#C4661F"/><path d="M106 44l-10 4" stroke-width="3"/>
+<path d="M60 96q24 8 28-10 3-15-11-17" fill="none" stroke="#2A2118" stroke-width="20"/>
+<path d="M60 96q24 8 28-10 3-15-11-17" fill="none" stroke="#E08A2E" stroke-width="14"/>
+<path d="M72 68l-6-14 13 4z" fill="#C4661F"/>
+<ellipse cx="60" cy="76" rx="20" ry="25" fill="#E08A2E"/>
+<path d="M42 68h36M42 80h36" stroke-width="3"/>
+<circle cx="60" cy="46" r="15" fill="#E08A2E"/>
+<circle cx="54" cy="43" r="3.4" fill="#2A2118"/><circle cx="66" cy="43" r="3.4" fill="#2A2118"/>
+<path d="M54 52q6 4 12 0" stroke-width="3"/>`;
+
+D.camaron = `
+<path d="M100 48q-36-8-54 16-13 17-14 34" fill="none" stroke="#2A2118" stroke-width="27"/>
+<path d="M100 48q-36-8-54 16-13 17-14 34" fill="none" stroke="#F2795A" stroke-width="20"/>
+<path d="M32 98l-20 14 5-18-15-8 19-7z" fill="#E0603F"/>
+<path d="M74 44l-6 14M58 54l-4 14M46 70l-8 12" stroke="#D9563A" stroke-width="3"/>
+<path d="M52 88l-8 12M62 78l-6 14M74 66l-4 14" stroke-width="4"/>
+<circle cx="100" cy="46" r="16" fill="#F2795A"/>
+<path d="M112 36q10-14 8-28M114 48q14-8 14-24" stroke-width="3"/>
+<circle cx="104" cy="41" r="4" fill="#2A2118"/><circle cx="105.5" cy="39.5" r="1.5" fill="#fff" stroke="none"/>
+<path d="M104 54q7 3 11-2" stroke-width="3"/>`;
+
+D.ciempies = `
+<path d="M20 92l-8 14M36 82l-6 16M52 92l-8 14M68 82l-6 16M84 92l-8 14M20 66l-10-10M36 58l-4-14M52 66l-10-10M68 58l-4-14M84 66l-10-10" stroke-width="5"/>
+<circle cx="20" cy="80" r="14" fill="#C9873A"/><circle cx="36" cy="70" r="14" fill="#C9873A"/>
+<circle cx="52" cy="80" r="14" fill="#C9873A"/><circle cx="68" cy="70" r="14" fill="#C9873A"/>
+<circle cx="84" cy="80" r="14" fill="#C9873A"/>
+<circle cx="100" cy="66" r="16" fill="#E0A050"/>
+<path d="M96 52q-4-16-16-20M108 54q10-12 12-24" stroke-width="3.4"/>
+<circle cx="95" cy="62" r="3.6" fill="#2A2118"/><circle cx="106" cy="62" r="3.6" fill="#2A2118"/>
+<path d="M96 74q8 4 12-2" stroke-width="3"/>`;
+
+D.almeja = `
+<ellipse cx="60" cy="86" rx="12" ry="7" fill="#FFB3C1"/>
+<path d="M14 84q2-30 46-30t46 30q-22 12-46 12t-46-12z" fill="#EBD3B0"/>
+<path d="M16 62q6-26 44-26t44 26q-20 12-44 12T16 62z" fill="#F9EBD3"/>
+<path d="M40 42l-12 18M60 36v26M80 42l12 18" stroke-width="3"/>
+<circle cx="50" cy="52" r="4" fill="#2A2118"/><circle cx="70" cy="52" r="4" fill="#2A2118"/>`;
+
+D.erizo = `
+<path d="M60 6v22M60 118V96M6 62h22M114 62H92M22 24l16 16M98 24L82 40M22 100l16-16M98 100L82 84M34 12l10 20M86 12L76 32M34 112l10-20M86 112L76 92M10 40l20 10M110 40L90 50M10 84l20-10M110 84L90 74" stroke="#4A3A63" stroke-width="7"/>
+<circle cx="60" cy="62" r="31" fill="#6B4FA8"/>
+<circle cx="51" cy="58" r="7" fill="#FFFDF5"/><circle cx="69" cy="58" r="7" fill="#FFFDF5"/>
+<circle cx="52" cy="59" r="3.2" fill="#2A2118" stroke="none"/><circle cx="68" cy="59" r="3.2" fill="#2A2118" stroke="none"/>
+<path d="M52 74q8 6 16 0" stroke-width="3"/>`;
+
+D.medusa = `
+<g fill="none" stroke-linecap="round">
+<path d="M32 84q-6 14 2 22t-2 14M48 88q-4 16 4 22t-2 12M72 88q4 16-4 22t2 12M88 84q6 14-2 22t2 14" stroke="#2A2118" stroke-width="15"/>
+<path d="M32 84q-6 14 2 22t-2 14M48 88q-4 16 4 22t-2 12M72 88q4 16-4 22t2 12M88 84q6 14-2 22t2 14" stroke="#E8A3C6" stroke-width="9"/>
+</g>
+<path d="M18 68q0-44 42-44t42 44q0 10-8 10H26q-8 0-8-10z" fill="#F2A7C3"/>
+<path d="M20 76q10 12 20 0t20 0 20 0 20 0" fill="#F2A7C3"/>
+<circle cx="48" cy="54" r="7" fill="#FFFDF5"/><circle cx="72" cy="54" r="7" fill="#FFFDF5"/>
+<circle cx="49" cy="55" r="3.2" fill="#2A2118" stroke="none"/><circle cx="71" cy="55" r="3.2" fill="#2A2118" stroke="none"/>
+<path d="M52 68q8 6 16 0" stroke-width="3"/>`;
+
+D.anemona = `
+<g fill="none" stroke-linecap="round">
+<path d="M34 84q-10-18-4-32M48 80q-8-22-2-34M60 78q0-24 0-34M72 80q8-22 2-34M86 84q10-18 4-32M26 90q-14-12-14-26M94 90q14-12 14-26" stroke="#2A2118" stroke-width="14"/>
+<path d="M34 84q-10-18-4-32M48 80q-8-22-2-34M60 78q0-24 0-34M72 80q8-22 2-34M86 84q10-18 4-32M26 90q-14-12-14-26M94 90q14-12 14-26" stroke="#F2679B" stroke-width="8"/>
+</g>
+<path d="M20 106q0-24 40-24t40 24z" fill="#E0603F"/>
+<circle cx="50" cy="94" r="4" fill="#2A2118"/><circle cx="70" cy="94" r="4" fill="#2A2118"/>
+<path d="M52 102q8 5 16 0" stroke-width="3"/>`;
+
+function dibujo(id, cls){
+  return '<svg viewBox="0 0 120 120" class="'+(cls||'')+'" role="img" aria-hidden="true">'+
+    '<g stroke="#2A2118" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" fill="none">'+
+    (D[id]||D.blandito)+'</g></svg>';
+}
+
+/* ============================================================
+   CONTENIDO — CLASIFICACIÓN de los animales.
+   VERTEBRADOS (5 grupos): mamíferos, aves, peces, reptiles y anfibios.
+   INVERTEBRADOS (5 grupos): artrópodos (insectos, arácnidos,
+   crustáceos y miriápodos), moluscos, equinodermos, anélidos y cnidarios.
+   ============================================================ */
+const ANIMALES = [
+ {id:'perro',      n:'El perro',        t:'v', g:'Mamífero',    sup:'Mamífero',    patas:null,     d:'Tiene pelo y de bebé toma leche de su mamá.'},
+ {id:'gato',       n:'El gato',         t:'v', g:'Mamífero',    sup:'Mamífero',    patas:null,     d:'Tiene pelo, bigotes y huesos por dentro.'},
+ {id:'vaca',       n:'La vaca',         t:'v', g:'Mamífero',    sup:'Mamífero',    patas:null,     d:'Tiene pelo y de bebé toma leche de su mamá.'},
+ {id:'delfin',     n:'El delfín',       t:'v', g:'Mamífero',    sup:'Mamífero',    patas:null,     d:'Vive en el mar, pero no es pez: respira aire y toma leche.'},
+ {id:'murcielago', n:'El murciélago',   t:'v', g:'Mamífero',    sup:'Mamífero',    patas:null,     d:'Vuela, pero no es ave: tiene pelo, no plumas.'},
+ {id:'gallina',    n:'La gallina',      t:'v', g:'Ave',         sup:'Ave',         patas:null,     d:'Tiene plumas, pico y dos patas. Nace de un huevo.'},
+ {id:'loro',       n:'El loro',         t:'v', g:'Ave',         sup:'Ave',         patas:null,     d:'Tiene plumas de colores, pico y dos alas.'},
+ {id:'pinguino',   n:'El pingüino',     t:'v', g:'Ave',         sup:'Ave',         patas:null,     d:'Tiene plumas y pico. Nada muy rápido y no vuela.'},
+ {id:'pez',        n:'El pez',          t:'v', g:'Pez',         sup:'Pez',         patas:null,     d:'Tiene escamas y aletas. Respira dentro del agua.'},
+ {id:'tiburon',    n:'El tiburón',      t:'v', g:'Pez',         sup:'Pez',         patas:null,     d:'Es un pez grandote, con aletas y esqueleto.'},
+ {id:'tortuga',    n:'La tortuga',      t:'v', g:'Reptil',      sup:'Reptil',      patas:null,     d:'Tiene escamas y un caparazón duro pegado a sus huesos.'},
+ {id:'serpiente',  n:'La serpiente',    t:'v', g:'Reptil',      sup:'Reptil',      patas:null,     d:'No tiene patas, pero sí una columna con muchos huesitos.'},
+ {id:'cocodrilo',  n:'El cocodrilo',    t:'v', g:'Reptil',      sup:'Reptil',      patas:null,     d:'Tiene escamas duras y secas, y camina con cuatro patas.'},
+ {id:'rana',       n:'La rana',         t:'v', g:'Anfibio',     sup:'Anfibio',     patas:null,     d:'Nace en el agua y de grande salta en la tierra.'},
+ {id:'salamandra', n:'La salamandra',   t:'v', g:'Anfibio',     sup:'Anfibio',     patas:null,     d:'Tiene la piel húmeda y suave. Vive cerca del agua.'},
+
+ {id:'mariposa',   n:'La mariposa',     t:'i', g:'Insecto',     sup:'Artrópodo',   patas:'6',      d:'Tiene 6 patas, 2 antenas y alas de colores.'},
+ {id:'abeja',      n:'La abeja',        t:'i', g:'Insecto',     sup:'Artrópodo',   patas:'6',      d:'Tiene 6 patas, 2 antenas y hace miel.'},
+ {id:'hormiga',    n:'La hormiga',      t:'i', g:'Insecto',     sup:'Artrópodo',   patas:'6',      d:'Tiene 6 patas, 2 antenas y su cuerpo tiene 3 partes.'},
+ {id:'mariquita',  n:'La mariquita',    t:'i', g:'Insecto',     sup:'Artrópodo',   patas:'6',      d:'Tiene 6 patas, 2 antenas y puntitos negros.'},
+ {id:'arana',      n:'La araña',        t:'i', g:'Arácnido',    sup:'Artrópodo',   patas:'8',      d:'Tiene 8 patas y no tiene antenas. ¡No es un insecto!'},
+ {id:'escorpion',  n:'El escorpión',    t:'i', g:'Arácnido',    sup:'Artrópodo',   patas:'8',      d:'Tiene 8 patas, dos pinzas y no tiene antenas.'},
+ {id:'cangrejo',   n:'El cangrejo',     t:'i', g:'Crustáceo',   sup:'Artrópodo',   patas:'10',     d:'Tiene 10 patas con dos pinzas y una coraza dura.'},
+ {id:'camaron',    n:'El camarón',      t:'i', g:'Crustáceo',   sup:'Artrópodo',   patas:'10',     d:'Vive en el agua y su cuerpo tiene una coraza dura.'},
+ {id:'ciempies',   n:'El ciempiés',     t:'i', g:'Miriápodo',   sup:'Artrópodo',   patas:'muchas', d:'Tiene muchísimas patas y el cuerpo largo con anillos.'},
+ {id:'caracol',    n:'El caracol',      t:'i', g:'Molusco',     sup:'Molusco',     patas:null,     d:'Su cuerpo es blandito y lleva su concha por fuera.'},
+ {id:'pulpo',      n:'El pulpo',        t:'i', g:'Molusco',     sup:'Molusco',     patas:null,     d:'Es todo blandito, tiene 8 brazos y no tiene concha.'},
+ {id:'almeja',     n:'La almeja',       t:'i', g:'Molusco',     sup:'Molusco',     patas:null,     d:'Es blandita y se protege con dos conchas.'},
+ {id:'estrella',   n:'La estrella de mar', t:'i', g:'Equinodermo', sup:'Equinodermo', patas:null,  d:'Vive en el mar y tiene 5 brazos con piel áspera.'},
+ {id:'erizo',      n:'El erizo de mar', t:'i', g:'Equinodermo', sup:'Equinodermo', patas:null,     d:'Vive en el fondo del mar y está lleno de espinas.'},
+ {id:'lombriz',    n:'La lombriz',      t:'i', g:'Anélido',     sup:'Anélido',     patas:null,     d:'Su cuerpo es blandito, largo y hecho de anillos.'},
+ {id:'medusa',     n:'La medusa',       t:'i', g:'Cnidario',    sup:'Cnidario',    patas:null,     d:'Su cuerpo es gelatinoso y tiene tentáculos.'},
+ {id:'anemona',    n:'La anémona',      t:'i', g:'Cnidario',    sup:'Cnidario',    patas:null,     d:'Vive pegada a las rocas del mar y tiene tentáculos.'}
+];
+
+/* Láminas: primero el concepto, después TODA la clasificación */
+const LAMINAS = [
+ {titulo:'VERTEBRADOS', chapa:'v', dibujos:['columna','perro','pez'],
+  datos:['Tienen huesos','Tienen columna'],
+  texto:'Tienen huesos por dentro y una columna en la espalda.',
+  voz:'Los vertebrados tienen huesos por dentro y una columna en la espalda. Como el perro y el pez.'},
+
+ {titulo:'INVERTEBRADOS', chapa:'i', dibujos:['blandito','caracol','mariposa'],
+  datos:['Sin huesos','Sin columna'],
+  texto:'No tienen huesos ni columna. Son blanditos o llevan caparazón por fuera.',
+  voz:'Los invertebrados no tienen huesos ni columna. Son blanditos, o llevan un caparazón por fuera. Como el caracol y la mariposa.'},
+
+ {titulo:'5 GRUPOS DE VERTEBRADOS', chapa:'v', dibujos:['perro','gallina','pez','tortuga','rana'],
+  datos:['Mamíferos','Aves','Peces','Reptiles','Anfibios'],
+  texto:'Los vertebrados se dividen en 5 grupos.',
+  voz:'Los vertebrados se dividen en cinco grupos: mamíferos, aves, peces, reptiles y anfibios.'},
+
+ {titulo:'MAMÍFEROS', chapa:'v', dibujos:['perro','vaca','delfin'],
+  datos:['Pelo','Toman leche'],
+  texto:'Tienen pelo y de bebés toman leche de su mamá.',
+  voz:'Los mamíferos son vertebrados. Tienen pelo y de bebés toman leche de su mamá. El perro, la vaca y el delfín.'},
+
+ {titulo:'AVES', chapa:'v', dibujos:['gallina','loro','pinguino'],
+  datos:['Plumas','Pico','2 patas','Huevos'],
+  texto:'Tienen plumas, pico y dos patas. Nacen de un huevo.',
+  voz:'Las aves son vertebrados. Tienen plumas, pico y dos patas, y nacen de un huevo. La gallina, el loro y el pingüino.'},
+
+ {titulo:'PECES', chapa:'v', dibujos:['pez','tiburon'],
+  datos:['Escamas','Aletas','Viven en el agua'],
+  texto:'Tienen escamas y aletas. Respiran dentro del agua.',
+  voz:'Los peces son vertebrados. Tienen escamas y aletas, y respiran dentro del agua. El pez payaso y el tiburón.'},
+
+ {titulo:'REPTILES', chapa:'v', dibujos:['tortuga','serpiente','cocodrilo'],
+  datos:['Escamas duras','Piel seca'],
+  texto:'Tienen escamas duras y secas. Se arrastran o caminan bajito.',
+  voz:'Los reptiles son vertebrados. Tienen escamas duras y secas. La tortuga, la serpiente y el cocodrilo.'},
+
+ {titulo:'ANFIBIOS', chapa:'v', dibujos:['rana','salamandra'],
+  datos:['Piel húmeda','Agua y tierra'],
+  texto:'Viven un poco en el agua y un poco en la tierra. Su piel es húmeda.',
+  voz:'Los anfibios son vertebrados. Viven un poco en el agua y un poco en la tierra, y su piel es húmeda. La rana y la salamandra.'},
+
+ {titulo:'5 GRUPOS DE INVERTEBRADOS', chapa:'i', dibujos:['mariposa','caracol','estrella','lombriz','medusa'],
+  datos:['Artrópodos','Moluscos','Equinodermos','Anélidos','Cnidarios'],
+  texto:'Los invertebrados se dividen en 5 grupos.',
+  voz:'Los invertebrados se dividen en cinco grupos: artrópodos, moluscos, equinodermos, anélidos y cnidarios.'},
+
+ {titulo:'ARTRÓPODOS', chapa:'i', dibujos:['mariposa','arana','cangrejo','ciempies'],
+  datos:['Patas articuladas','Esqueleto por fuera','¡El grupo más grande!'],
+  texto:'Se dividen en 4: insectos, arácnidos, crustáceos y miriápodos.',
+  voz:'Los artrópodos tienen patas articuladas y esqueleto por fuera. Se dividen en cuatro: insectos, arácnidos, crustáceos y miriápodos.'},
+
+ {titulo:'INSECTOS', chapa:'i', dibujos:['mariposa','abeja','hormiga'],
+  datos:['6 patas','2 antenas','Cabeza, tórax y abdomen'],
+  texto:'Son artrópodos con 6 patas y 2 antenas.',
+  voz:'Los insectos son artrópodos. Tienen seis patas, dos antenas y su cuerpo tiene tres partes. La mariposa, la abeja y la hormiga.'},
+
+ {titulo:'ARÁCNIDOS', chapa:'i', dibujos:['arana','escorpion'],
+  datos:['8 patas','Sin antenas'],
+  texto:'Son artrópodos con 8 patas y sin antenas. ¡No son insectos!',
+  voz:'Los arácnidos son artrópodos. Tienen ocho patas y no tienen antenas, por eso no son insectos. La araña y el escorpión.'},
+
+ {titulo:'CRUSTÁCEOS', chapa:'i', dibujos:['cangrejo','camaron'],
+  datos:['10 patas o más','Coraza dura','Viven en el agua'],
+  texto:'Son artrópodos con coraza dura. Casi todos viven en el agua.',
+  voz:'Los crustáceos son artrópodos. Tienen diez patas o más y una coraza dura. Casi todos viven en el agua. El cangrejo y el camarón.'},
+
+ {titulo:'MIRIÁPODOS', chapa:'i', dibujos:['ciempies'],
+  datos:['Muchas patas','Cuerpo con anillos'],
+  texto:'Son artrópodos con muchísimas patas y el cuerpo largo.',
+  voz:'Los miriápodos son artrópodos. Tienen muchísimas patas y el cuerpo largo con anillos. El ciempiés y el milpiés.'},
+
+ {titulo:'MOLUSCOS', chapa:'i', dibujos:['caracol','pulpo','almeja'],
+  datos:['Cuerpo blando','Algunos con concha'],
+  texto:'Su cuerpo es blandito. Algunos llevan concha por fuera.',
+  voz:'Los moluscos tienen el cuerpo blandito. Algunos llevan concha, como el caracol y la almeja. El pulpo no tiene ninguna.'},
+
+ {titulo:'EQUINODERMOS', chapa:'i', dibujos:['estrella','erizo'],
+  datos:['Viven en el mar','Piel con espinas'],
+  texto:'Viven en el mar y su piel tiene espinas o placas.',
+  voz:'Los equinodermos viven solo en el mar y su piel tiene espinas. La estrella de mar y el erizo de mar.'},
+
+ {titulo:'ANÉLIDOS', chapa:'i', dibujos:['lombriz'],
+  datos:['Cuerpo con anillos','Tierra húmeda'],
+  texto:'Su cuerpo es blandito, largo y está hecho de anillos.',
+  voz:'Los anélidos tienen el cuerpo blandito, largo y hecho de anillos. Viven en la tierra húmeda. La lombriz y la sanguijuela.'},
+
+ {titulo:'CNIDARIOS', chapa:'i', dibujos:['medusa','anemona'],
+  datos:['Tentáculos','Gelatinosos','Viven en el mar'],
+  texto:'Tienen tentáculos y el cuerpo gelatinoso. Viven en el mar.',
+  voz:'Los cnidarios tienen tentáculos y el cuerpo gelatinoso, y viven en el mar. La medusa, la anémona y el coral.'},
+
+ {titulo:'¡OJO CON ESTOS!', chapa:null, dibujos:['delfin','murcielago','tiburon','arana'],
+  datos:['Delfín: mamífero','Murciélago: mamífero','Tiburón: pez','Araña: arácnido'],
+  texto:'Los tres primeros son VERTEBRADOS. La araña es INVERTEBRADA.',
+  voz:'Cuidado con estos. El delfín y el murciélago son mamíferos, y el tiburón es un pez: los tres son vertebrados. La araña es un arácnido, y es invertebrada.'},
+
+ {titulo:'¡YA LO SABES!', chapa:null, dibujos:['nina','columna','blandito'],
+  datos:['Con huesos: vertebrado','Sin huesos: invertebrado'],
+  texto:'Ahora vamos a la evaluación para clasificarlos todos.',
+  voz:'¡Ya lo sabes, Antonela! Con huesos por dentro, vertebrado. Sin huesos por dentro, invertebrado. Ahora vamos a la evaluación.'}
+];
+
+const GRUPOS_V = ['Mamífero','Ave','Pez','Reptil','Anfibio'];
+const GRUPOS_I = ['Insecto','Arácnido','Crustáceo','Miriápodo','Molusco','Equinodermo','Anélido','Cnidario'];
+const ICONO_GRUPO = {'Mamífero':'perro','Ave':'gallina','Pez':'pez','Reptil':'tortuga','Anfibio':'rana',
+  'Insecto':'mariquita','Arácnido':'arana','Crustáceo':'cangrejo','Miriápodo':'ciempies','Molusco':'caracol',
+  'Equinodermo':'estrella','Anélido':'lombriz','Cnidario':'medusa','Artrópodo':'mariposa'};
+const PATAS_OPC = [{v:'6', txt:'6 PATAS', ic:'mariquita'},{v:'8', txt:'8 PATAS', ic:'arana'},{v:'muchas', txt:'MUCHAS PATAS', ic:'ciempies'}];
+
+/* ============================================================
+   SONIDO — todo generado dentro del código (no hay archivos que
+   se puedan perder): efectos con Web Audio y voz en español.
+   ============================================================ */
+let ctx = null, sonido = true;
+try{ sonido = localStorage.getItem('vi_sonido') !== '0'; }catch(e){}
+
+function audio(){
+  try{
+    if(!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(ctx.state === 'suspended') ctx.resume();
+  }catch(e){ ctx = null; }
+  return ctx;
+}
+function tono(freq, inicio, dur, forma, vol){
+  const a = audio(); if(!a || !sonido) return;
+  const t = a.currentTime + inicio;
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = forma || 'triangle'; o.frequency.setValueAtTime(freq, t);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol || 0.22, t + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + 0.05);
+}
+const sfxToque   = () => tono(660, 0, 0.10, 'sine', 0.16);
+const sfxPasa    = () => { tono(523, 0, 0.10, 'sine', 0.16); tono(784, 0.07, 0.14, 'sine', 0.14); };
+const sfxBien    = () => { [523,659,784,1047].forEach((f,k)=>tono(f, k*0.075, 0.28, 'triangle', 0.22)); };
+const sfxMal     = () => { tono(330, 0, 0.16, 'sine', 0.18); tono(247, 0.14, 0.26, 'sine', 0.16); };
+const sfxFiesta  = () => { [523,659,784,1047,784,1047,1319].forEach((f,k)=>tono(f, k*0.12, 0.34, 'triangle', 0.22)); };
+
+let vozES = null;
+function buscarVoz(){
+  try{
+    const v = window.speechSynthesis.getVoices() || [];
+    vozES = v.find(x=>/^es[-_](MX|US|419|CO|AR|CL|PE)/i.test(x.lang))
+         || v.find(x=>/^es/i.test(x.lang)) || null;
+  }catch(e){}
+}
+try{ buscarVoz(); window.speechSynthesis.onvoiceschanged = buscarVoz; }catch(e){}
+
+function hablar(texto){
+  if(!sonido || !texto) return;
+  try{
+    const s = window.speechSynthesis; if(!s) return;
+    s.cancel();
+    const u = new SpeechSynthesisUtterance(texto);
+    if(vozES){ u.voice = vozES; u.lang = vozES.lang; } else { u.lang = 'es-ES'; }
+    u.rate = 0.92; u.pitch = 1.15; u.volume = 1;
+    s.speak(u);
+  }catch(e){}
+}
+function callar(){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+
+/* ---------- confeti ---------- */
+const cv = document.getElementById('confeti'), cx2d = cv.getContext('2d');
+let trozos = [], animando = false;
+const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function ajustarCanvas(){ cv.width = innerWidth; cv.height = innerHeight; }
+ajustarCanvas(); addEventListener('resize', ajustarCanvas);
+function confeti(cantidad){
+  if(reduce) return;
+  const colores = ['#FFC53D','#FF6B4A','#2F7FD4','#1E9E63','#8E5BD8','#FF8FA0'];
+  for(let k=0;k<(cantidad||60);k++){
+    trozos.push({x:Math.random()*cv.width, y:-20-Math.random()*cv.height*0.3,
+      vx:(Math.random()-0.5)*2.4, vy:2+Math.random()*3.4, r:5+Math.random()*7,
+      g:Math.random()*6, vg:(Math.random()-0.5)*0.3, c:colores[k%colores.length]});
+  }
+  if(!animando){ animando = true; requestAnimationFrame(pintarConfeti); }
+}
+function pintarConfeti(){
+  cx2d.clearRect(0,0,cv.width,cv.height);
+  trozos = trozos.filter(p=>p.y < cv.height + 30);
+  trozos.forEach(p=>{
+    p.x += p.vx; p.y += p.vy; p.g += p.vg;
+    cx2d.save(); cx2d.translate(p.x,p.y); cx2d.rotate(p.g);
+    cx2d.fillStyle = p.c; cx2d.fillRect(-p.r/2, -p.r/2, p.r, p.r*0.6); cx2d.restore();
+  });
+  if(trozos.length){ requestAnimationFrame(pintarConfeti); }
+  else { animando = false; cx2d.clearRect(0,0,cv.width,cv.height); }
+}
+
+/* ---------- utilidades ---------- */
+const app = document.getElementById('app');
+const mezclar = arr => arr.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+function pintar(html){ app.innerHTML = '<section class="pantalla activa">'+html+'</section>'; }
+function botonSonido(){
+  return '<button class="icono" id="btn-sonido" aria-label="Activar o apagar el sonido">'+(sonido?'🔊':'🔇')+'</button>';
+}
+function engancharSonido(){
+  const b = document.getElementById('btn-sonido'); if(!b) return;
+  b.onclick = () => {
+    sonido = !sonido;
+    try{ localStorage.setItem('vi_sonido', sonido ? '1':'0'); }catch(e){}
+    b.textContent = sonido ? '🔊' : '🔇';
+    if(!sonido) callar(); else { audio(); sfxToque(); }
+  };
+}
+function engancharCasa(){
+  const b = document.getElementById('btn-casa'); if(!b) return;
+  b.onclick = () => { callar(); sfxToque(); pantallaInicio(); };
+}
+
+/* ============================================================
+   PANTALLAS
+   ============================================================ */
+let sesion = 0;
+function decirYSeguir(texto, cb){
+  let hecho = false;
+  const fin = () => { if(hecho) return; hecho = true; cb(); };
+  const respaldo = setTimeout(fin, Math.min(9000, 1900 + texto.length * 70));
+  if(!sonido) return;
+  try{
+    const s = window.speechSynthesis; if(!s) return;
+    s.cancel();
+    const u = new SpeechSynthesisUtterance(texto);
+    if(vozES){ u.voice = vozES; u.lang = vozES.lang; } else { u.lang = 'es-ES'; }
+    u.rate = 0.92; u.pitch = 1.15;
+    u.onend = () => { clearTimeout(respaldo); setTimeout(fin, 500); };
+    s.speak(u);
+  }catch(e){}
+}
+function escenaHabla(texto){
+  const e = document.getElementById('escena');
+  if(e) e.onclick = () => { audio(); sfxToque(); hablar(texto); };
+}
+
+/* ---------------- INICIO ---------------- */
+function pantallaInicio(){
+  sesion++; callar();
+  let mejor = 0; try{ mejor = parseInt(localStorage.getItem('vi_mejor')||'0',10) || 0; }catch(e){}
+  pintar(
+   '<div class="portada">'+
+     '<div class="barra" style="width:100%;justify-content:flex-end">'+botonSonido()+'</div>'+
+     '<div class="desfile">'+dibujo('perro','flota')+dibujo('mariposa','flota d2')+dibujo('pez','flota d3')+dibujo('caracol','flota d4')+'</div>'+
+     '<div class="cinta">'+
+       '<h1 class="titulo">Vertebrados e <em>Invertebrados</em></h1>'+
+       '<p>Clasificación de animales · para <b>Antonela</b>'+(mejor? ' · Mejor nota: <b>'+mejor+'/10</b>':'')+'</p>'+
+     '</div>'+
+     '<div class="tablero">'+
+       '<button class="btn azul" id="b-aprender">▶<span>APRENDER</span></button>'+
+       '<button class="btn coral" id="b-examen">⭐<span>EVALUACIÓN</span></button>'+
+     '</div>'+
+     '<p class="firma">Para Antonela, de su papá que la ama mucho ❤️</p>'+
+   '</div>');
+  engancharSonido();
+  document.getElementById('b-aprender').onclick = () => { audio(); sfxPasa(); pantallaAprender(0); };
+  document.getElementById('b-examen').onclick   = () => { audio(); sfxPasa(); pantallaExamen(); };
+}
+
+/* ---------------- APRENDER ---------------- */
+function pantallaAprender(i){
+  sesion++; callar();
+  const L = LAMINAS[i], ultima = (i === LAMINAS.length - 1);
+  const nd = L.dibujos.length;
+  const clase = 'escena' + (nd >= 5 ? ' cinco' : (nd >= 3 ? ' mini' : (nd === 2 ? ' dos' : '')));
+  const chips = (L.datos && L.datos.length)
+    ? '<div class="chips">' + L.datos.map(x=>'<span class="chip">'+x+'</span>').join('') + '</div>' : '';
+  const dib = L.dibujos.map(id => dibujo(id, 'pop')).join('');
+  const puntos = LAMINAS.map((_,k)=> '<i class="punto '+(k<i?'hecho':(k===i?'ahora':''))+'"></i>').join('');
+  const chapa = L.chapa ? '<div class="chapa'+(L.chapa==='i'?' inv':'')+'">'+(L.chapa==='v'?'🦴 Vertebrado':'🐛 Invertebrado')+'</div>' : '';
+  pintar(
+   '<div class="marco">'+
+     '<div class="barra"><button class="icono" id="btn-casa" aria-label="Volver al inicio">🏠</button>'+
+       '<div class="pasos">'+puntos+'</div>'+botonSonido()+'</div>'+
+     '<div class="'+clase+'" id="escena" title="Tócame para escuchar otra vez">'+dib+'<span class="oreja">🔊</span></div>'+
+     '<h2 class="nombre">'+L.titulo+'</h2>'+ chapa + chips +
+     '<p class="dato">'+L.texto+'</p>'+
+     '<button class="btn '+(ultima?'verde':'')+'" id="b-sigue">'+(ultima?'⭐<span>EVALUACIÓN</span>':'<span>SIGUIENTE</span>▶')+'</button>'+
+   '</div>');
+  engancharSonido(); engancharCasa(); escenaHabla(L.voz);
+  hablar(L.voz);
+  document.getElementById('b-sigue').onclick = () => {
+    audio(); sfxPasa(); callar();
+    if(ultima) pantallaExamen(); else pantallaAprender(i+1);
+  };
+}
+
+/* ---------------- EVALUACIÓN ---------------- */
+let examen = [], iPreg = 0, aciertos = 0, fallos = [], marcas = [];
+function armarExamen(){
+  const v = mezclar(ANIMALES.filter(a=>a.t==='v'));
+  const i = mezclar(ANIMALES.filter(a=>a.t==='i'));
+  const binarias = [v[0], i[0]].map(a=>({modo:'bin', a:a}));
+  const clasifica = mezclar([v[1],v[2],v[3],i[1],i[2],i[3]]).map(a=>({modo:'grp', a:a}));
+  const usados = {}; [v[0],i[0],v[1],v[2],v[3],i[1],i[2],i[3]].forEach(a=>{ usados[a.id]=1; });
+  const conPatas = mezclar(ANIMALES.filter(a=>a.patas==='6'||a.patas==='8'||a.patas==='muchas'))
+                    .filter(a=>!usados[a.id]).slice(0,2).map(a=>({modo:'patas', a:a}));
+  return mezclar(binarias.concat(clasifica, conPatas));
+}
+function pantallaExamen(){
+  examen = armarExamen(); iPreg = 0; aciertos = 0; fallos = []; marcas = [];
+  mostrarPregunta();
+}
+function mostrarPregunta(){
+  sesion++; callar();
+  const p = examen[iPreg], a = p.a;
+  const estrellas = examen.map((_,k)=>{
+    if(k < iPreg) return marcas[k] ? '<span class="on">⭐</span>' : '<span class="off">💧</span>';
+    return '<span>⭐</span>';
+  }).join('');
+  let pregunta, opciones;
+  if(p.modo === 'bin'){
+    pregunta = '¿' + a.n + ' es…?';
+    opciones = '<div class="opciones dos">'+
+      '<button class="btn azul op" data-r="v">'+dibujo('hueso')+'<span>VERTEBRADO</span></button>'+
+      '<button class="btn coral op" data-r="i">'+dibujo('blandito')+'<span>INVERTEBRADO</span></button>'+
+      '</div>';
+  } else if(p.modo === 'patas'){
+    pregunta = '¿Cuántas patas tiene ' + a.n.charAt(0).toLowerCase() + a.n.slice(1) + '?';
+    opciones = '<div class="opciones tres">' + PATAS_OPC.map(o =>
+      '<button class="btn crema op" data-r="'+o.v+'">'+dibujo(o.ic)+'<span>'+o.txt+'</span></button>').join('') + '</div>';
+  } else {
+    const pool = (a.t === 'v' ? GRUPOS_V : GRUPOS_I).filter(g => g !== a.g);
+    const tres = mezclar([a.g].concat(mezclar(pool).slice(0,2)));
+    pregunta = '¿Qué es ' + a.n.charAt(0).toLowerCase() + a.n.slice(1) + '?';
+    opciones = '<div class="opciones tres">' + tres.map(g =>
+      '<button class="btn crema op" data-r="'+g+'">'+dibujo(ICONO_GRUPO[g])+'<span>'+g.toUpperCase()+'</span></button>').join('') + '</div>';
+  }
+  pintar(
+   '<div class="marco">'+
+     '<div class="barra"><button class="icono" id="btn-casa" aria-label="Volver al inicio">🏠</button>'+
+       '<div class="estrellitas">'+estrellas+'</div>'+botonSonido()+'</div>'+
+     '<div class="escena" id="escena" title="Tócame para escuchar otra vez">'+dibujo(a.id,'pop')+'<span class="oreja">🔊</span></div>'+
+     '<h2 class="nombre">'+pregunta+'</h2>'+
+     opciones+
+   '</div>');
+  engancharSonido(); engancharCasa(); escenaHabla(pregunta);
+  hablar(pregunta);
+  const botones = Array.prototype.slice.call(document.querySelectorAll('.op'));
+  botones.forEach(b => { b.onclick = () => responder(b, botones, p); });
+}
+function responder(boton, botones, p){
+  const a = p.a, t = sesion;
+  const correcta = (p.modo === 'bin') ? a.t : (p.modo === 'patas' ? a.patas : a.g);
+  const elegida = boton.getAttribute('data-r');
+  const bien = (elegida === correcta);
+  botones.forEach(b => { b.disabled = true; if(b !== boton) b.classList.add('apagado'); });
+  const tipoTxt = a.t === 'v' ? 'vertebrado' : 'invertebrado';
+  const patasTxt = a.patas === 'muchas' ? 'muchas patas' : (a.patas + ' patas');
+  const etiqueta = (p.modo === 'bin') ? tipoTxt.toUpperCase()
+                 : (p.modo === 'patas' ? patasTxt.toUpperCase() : correcta.toUpperCase());
+  const explica = (p.modo === 'bin') ? (a.n + ' es un animal ' + tipoTxt + '. ' + a.d)
+                 : (p.modo === 'patas' ? (a.n + ' tiene ' + patasTxt + ', por eso es un ' + a.g.toLowerCase() + '.')
+                 : (a.n + ' es un ' + correcta.toLowerCase() + ', un animal ' + tipoTxt + '. ' + a.d));
+  let voz;
+  if(bien){
+    aciertos++; marcas[iPreg] = true;
+    boton.classList.remove('apagado'); boton.classList.add('bien');
+    sfxBien(); confeti(34);
+    voz = '¡Muy bien! ' + explica;
+  } else {
+    marcas[iPreg] = false;
+    fallos.push({n:a.n, r:etiqueta, d:explica});
+    boton.classList.remove('apagado'); boton.classList.add('mal');
+    const buena = botones.filter(b => b.getAttribute('data-r') === correcta)[0];
+    if(buena){ buena.classList.remove('apagado'); buena.classList.add('bien'); }
+    sfxMal();
+    voz = 'Casi. ' + explica;
+  }
+  decirYSeguir(voz, () => {
+    if(t !== sesion) return;
+    iPreg++;
+    if(iPreg < examen.length) mostrarPregunta(); else pantallaResultado();
+  });
+}
+
+/* ---------------- RESULTADO ---------------- */
+function pantallaResultado(){
+  sesion++; callar();
+  let mejor = 0; try{ mejor = parseInt(localStorage.getItem('vi_mejor')||'0',10) || 0; }catch(e){}
+  if(aciertos > mejor){ mejor = aciertos; try{ localStorage.setItem('vi_mejor', String(aciertos)); }catch(e){} }
+  const estrellas = Math.round(aciertos / 2);
+  let titulo, voz, cara;
+  if(aciertos === 10){ titulo='¡PERFECTO, ANTONELA!'; cara='nina'; voz='¡Perfecto, Antonela! Diez de diez. ¡Estás lista para tu prueba!'; }
+  else if(aciertos >= 8){ titulo='¡EXCELENTE!'; cara='nina'; voz='¡Excelente, Antonela! Sacaste '+aciertos+' de 10. ¡Casi perfecto!'; }
+  else if(aciertos >= 6){ titulo='¡MUY BIEN!'; cara='columna'; voz='¡Muy bien! Sacaste '+aciertos+' de 10. Repasemos un poquito más.'; }
+  else { titulo='¡A REPASAR JUNTOS!'; cara='blandito'; voz='Sacaste '+aciertos+' de 10. Vamos a repasar juntos y lo intentas otra vez.'; }
+  if(aciertos >= 8){ sfxFiesta(); confeti(140); } else { sfxPasa(); }
+  const repaso = fallos.length
+    ? '<div class="repaso"><b>Para repasar:</b><ul>'+fallos.map(f=>'<li><b>'+f.r+'</b> — '+f.d+'</li>').join('')+'</ul></div>'
+    : '<div class="repaso"><b>¡No te equivocaste en nada!</b> Recuerda: con huesos por dentro es <b>VERTEBRADO</b>, sin huesos por dentro es <b>INVERTEBRADO</b>.</div>';
+  pintar(
+   '<div class="marco">'+
+     '<div class="barra"><button class="icono" id="btn-casa" aria-label="Volver al inicio">🏠</button>'+
+       '<div class="pasos"></div>'+botonSonido()+'</div>'+
+     '<div class="escena mini" id="escena">'+dibujo(cara,'pop')+'</div>'+
+     '<div class="diploma">'+
+       '<h2 class="nombre">'+titulo+'</h2>'+
+       '<div class="marcador">'+aciertos+'<small>/10</small></div>'+
+       '<div class="estrellas-fin">'+'⭐'.repeat(estrellas)+'</div>'+
+     '</div>'+
+     repaso+
+     '<div class="tablero">'+
+       '<button class="btn" id="b-otra">🔁<span>OTRA VEZ</span></button>'+
+       '<button class="btn azul" id="b-repasar">📖<span>REPASAR</span></button>'+
+     '</div>'+
+   '</div>');
+  engancharSonido(); engancharCasa(); escenaHabla(voz);
+  hablar(voz);
+  document.getElementById('b-otra').onclick    = () => { audio(); sfxPasa(); pantallaExamen(); };
+  document.getElementById('b-repasar').onclick = () => { audio(); sfxPasa(); pantallaAprender(0); };
+}
+
+/* ---------------- arranque ---------------- */
+document.addEventListener('pointerdown', function abrirAudio(){ audio(); document.removeEventListener('pointerdown', abrirAudio); });
+pantallaInicio();
+</script>
+</body>
+</html>
