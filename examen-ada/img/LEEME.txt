@@ -1,0 +1,26 @@
+Carpeta de imágenes del Cuestionario Clase B.
+
+Sube aquí las capturas de las preguntas que llevan figura.
+El nombre del archivo DEBE ser exactamente el indicado, en formato .jpg:
+
+  m4-p17.jpg   -> Módulo 4, P17 (anclaje del SRI)
+  m5-p3.jpg    -> Módulo 5, P3  (camión en la situación de la figura)
+  m5-p6.jpg    -> Módulo 5, P6  (formas de viraje)
+  m5-p8.jpg    -> Módulo 5, P8  (tipo de pistas)
+  m5-p13.jpg   -> Módulo 5, P13 (qué situación refleja la figura)
+  m5-p16.jpg   -> Módulo 5, P16 (qué significa el punto azul)
+  m5-p18.jpg   -> Módulo 5, P18 (señal de la carabinera)
+  m5-p19.jpg   -> Módulo 5, P19 (tipo de señal representada)
+  m5-p21.jpg   -> Módulo 5, P21 (qué indica el punto rojo)
+  m5-p22.jpg   -> Módulo 5, P22 (qué hacer si es adelantado)
+  m5-p27.jpg   -> Módulo 5, P27 (significado de la señal mostrada)
+  m5-p34.jpg   -> Módulo 5, P34 (qué situación muestra la figura)
+  m6-p27.jpg   -> Módulo 6, P27 (distancia x por espejos)
+  m7-p11.jpg   -> Módulo 7, P11 (qué se infiere de la figura)
+  m7-p20.jpg   -> Módulo 7, P20 (a qué corresponde la figura)
+  ens-p9.jpg   -> Ensayo, P9  (punto de encuentro de los autos)
+  ens-p12.jpg  -> Ensayo, P12 (seña del brazo: virar a la izquierda)
+  ens-p19.jpg  -> Ensayo, P19 (qué significa esta señal)
+  ens-p27.jpg  -> Ensayo, P27 (pista obstruida, qué hacer)
+
+Si el archivo se llama distinto o falta, la pregunta muestra el aviso y su respuesta igual.
