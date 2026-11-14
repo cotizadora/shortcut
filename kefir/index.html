@@ -31,7 +31,7 @@
   --texto:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{margin:0;background:var(--leche);color:var(--tinta);font:17px/1.6 var(--texto);-webkit-text-size-adjust:100%}
 img{max-width:100%;height:auto;display:block}
 a{color:var(--azul)}
@@ -64,9 +64,51 @@ h2{font-family:var(--titulo);font-style:italic;font-weight:900;color:var(--azul)
 h2+p.bajada{margin:0 0 16px;color:var(--suave)}
 h3{color:var(--azul);margin:0 0 4px;font-size:18px}
 
-/* Índice */
-.indice{display:flex;gap:8px;overflow-x:auto;padding:14px 0 4px;-webkit-overflow-scrolling:touch}
-.indice a{flex:none;text-decoration:none;background:#fff;border:1px solid var(--borde);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600}
+/* Botonera siempre visible */
+.indice{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:18px 0 4px}
+.indice a{display:flex;align-items:center;gap:10px;text-decoration:none;background:#fff;border:1px solid var(--borde);
+  border-radius:14px;padding:12px 12px;font-size:15px;font-weight:700;line-height:1.2;color:var(--azul);
+  box-shadow:0 2px 8px rgba(43,49,64,.06);transition:transform .18s ease,box-shadow .18s ease,background .18s ease,color .18s ease}
+.indice a i{flex:none;width:34px;height:34px;border-radius:50%;background:var(--crema);display:grid;place-items:center;
+  font-style:normal;font-size:18px;transition:background .18s ease}
+.indice a:hover,.indice a:focus-visible{transform:translateY(-3px);box-shadow:0 8px 18px rgba(43,49,64,.16);background:var(--azul);color:#fff}
+.indice a:active{transform:scale(.97)}
+.indice a.ancho{grid-column:1/-1;justify-content:center}
+.titulo-menu{font-family:var(--titulo);font-style:italic;font-weight:900;color:var(--azul);font-size:20px;margin:22px 0 0;text-align:center}
+.volver{display:inline-flex;align-items:center;gap:6px;margin-top:16px;text-decoration:none;font-weight:700;font-size:14px;
+  color:var(--azul);background:var(--crema);border-radius:999px;padding:8px 14px;transition:background .18s ease,transform .18s ease}
+.volver:hover,.volver:focus-visible{background:var(--crema-osc);transform:translateY(-2px)}
+.flotante{position:fixed;right:14px;bottom:16px;z-index:40;width:52px;height:52px;border-radius:50%;background:var(--azul);color:#fff;
+  text-decoration:none;display:grid;place-items:center;font-size:11px;font-weight:700;line-height:1.05;text-align:center;
+  box-shadow:0 6px 16px rgba(43,49,64,.35);opacity:0;pointer-events:none;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease}
+.flotante.ver{opacity:1;pointer-events:auto;transform:none}
+.flotante b{display:block;font-size:18px;line-height:1}
+
+/* Efectos */
+.tarjeta,.pasos li,details,figure,.tiempos div{transition:transform .2s ease,box-shadow .2s ease}
+.tarjeta:hover,.pasos li:hover,figure:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(43,49,64,.12)}
+.tiempos div:hover{transform:scale(1.04)}
+.btn{transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(31,168,85,.45)}
+.btn:active{transform:scale(.96)}
+details[open] .r{animation:abrir .28s ease}
+summary::after{transition:transform .2s ease}
+section:target h2{animation:destacar 1.2s ease}
+@keyframes abrir{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes destacar{0%{background:#fff3b0}100%{background:transparent}}
+@keyframes entrar{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes latido{0%,100%{box-shadow:0 4px 12px rgba(31,168,85,.35)}50%{box-shadow:0 4px 12px rgba(31,168,85,.35),0 0 0 10px rgba(31,168,85,0)}25%{box-shadow:0 4px 12px rgba(31,168,85,.35),0 0 0 0 rgba(31,168,85,.45)}}
+.portada img.logo{animation:entrar .7s ease both}
+.portada .sello,.portada h1,.portada p,.portada .btn{animation:entrar .7s ease both}
+.portada .sello{animation-delay:.12s}.portada h1{animation-delay:.2s}.portada p{animation-delay:.28s}
+.portada .btn.grande{animation:entrar .7s ease .36s both,latido 2.4s ease-in-out 1.2s infinite}
+.js .aparece{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.js .aparece.visto{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .js .aparece{opacity:1;transform:none}
+}
 
 .tarjetas{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
 .tarjeta{background:#fff;border:1px solid var(--borde);border-left:5px solid var(--azul);border-radius:14px;padding:14px 16px}
@@ -150,14 +192,15 @@ footer p{margin:4px auto;max-width:560px}
 </div>
 
 <main>
+  <p class="titulo-menu" id="menu">¿Qué quieres revisar?</p>
   <nav class="indice" aria-label="Secciones">
-    <a href="#esencial">Lo esencial</a>
-    <a href="#tiempos">Tiempos y cantidad</a>
-    <a href="#leches">Qué leche usar</a>
-    <a href="#sobre">Sobrefermentación</a>
-    <a href="#seguridad">Cuándo botarlo</a>
-    <a href="#preguntas">Preguntas</a>
-    <a href="#material">Material de Sol</a>
+    <a href="#esencial"><i>⭐</i>Lo esencial</a>
+    <a href="#tiempos"><i>⏱️</i>Tiempos y cantidad</a>
+    <a href="#leches"><i>🥛</i>Qué leche usar</a>
+    <a href="#sobre"><i>⚠️</i>Sobre&shy;fermentación</a>
+    <a href="#seguridad"><i>🗑️</i>Cuándo botarlo</a>
+    <a href="#preguntas"><i>❓</i>Preguntas y respuestas</a>
+    <a class="ancho" href="#material"><i>📄</i>Material original de Sol</a>
   </nav>
 
   <section id="esencial">
@@ -172,6 +215,7 @@ footer p{margin:4px auto;max-width:560px}
       <div class="tarjeta"><h3>Utensilios</h3><p>Se recomienda evitar el metal. El acero inoxidable de buena calidad no da problemas, pero ante la duda es mejor no usarlo.</p></div>
       <div class="tarjeta si"><h3>Leche poco procesada</h3><p>Puede ser de cualquier mamífero, lo menos procesada posible y sin agregados.</p></div>
     </div>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="tiempos">
@@ -186,6 +230,7 @@ footer p{margin:4px auto;max-width:560px}
       <div class="tarjeta"><h3>Proporción</h3><p>150 gramos de nódulos por 1 litro de leche. Si hace mucho calor, se puede bajar a 100 gramos.</p></div>
       <div class="tarjeta"><h3>Cuándo está listo</h3><p>Cuando aparecen algunos hilitos de suero, líneas y burbujas. Se revuelve para unir suero y cuajada, y se cuela. Eso es el kéfir.</p></div>
     </div>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="leches">
@@ -198,6 +243,7 @@ footer p{margin:4px auto;max-width:560px}
       <div class="tarjeta"><h3>Leche en polvo: con cuidado</h3><p>Cuesta encontrar una que sirva. Debe ser realmente leche de vaca y no "bebida láctea", sin agregados. Se prepara con agua sin cloro, con un par de medidas extra, y se pone a los nódulos ya fría.</p></div>
     </div>
     <p style="margin-top:12px;font-size:15px;color:var(--suave)">Si eres intolerante a la lactosa: empieza de a poco, deja fermentar entre 24 y 36 horas y, ante cualquier duda, consulta con tu médico.</p>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="sobre">
@@ -216,6 +262,7 @@ footer p{margin:4px auto;max-width:560px}
       <li>Usa una leche lo menos adulterada posible.</li>
     </ol>
     <p style="margin-top:14px;font-size:15px;color:var(--suave)">La primera vez es normal que pase. Los nódulos sienten el cambio de casa, de leche, de frasco y hasta del aire. Por lo general después se adaptan.</p>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="seguridad">
@@ -231,6 +278,7 @@ footer p{margin:4px auto;max-width:560px}
       </ul>
       <p style="margin:10px 0 0">No todas las contaminaciones se ven a simple vista, y no basta con que no huela a podrido. Hacer bien el proceso después no elimina la contaminación: aunque parezca que los nódulos fermentan y reviven, su composición ya es otra. Con las bacterias no se juega.</p>
     </div>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="preguntas">
@@ -286,6 +334,7 @@ footer p{margin:4px auto;max-width:560px}
 
     <details><summary>¿Cómo consigo nódulos?</summary><div class="r">
       <p>Pídelos en el grupo indicando tu comuna o ciudad. Los integrantes los comparten o los intercambian, muchas veces por un litro de leche.</p></div></details>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <section id="material">
@@ -295,6 +344,7 @@ footer p{margin:4px auto;max-width:560px}
       <figure><a href="img/cuidados.jpg" target="_blank" rel="noopener"><img src="img/cuidados.jpg" alt="Lámina: los correctos cuidados del kéfir de leche" width="1186" height="1599" loading="lazy"></a><figcaption>Los correctos cuidados del kéfir de leche (el resumen verde).</figcaption></figure>
       <figure><a href="img/leches.jpg" target="_blank" rel="noopener"><img src="img/leches.jpg" alt="Lámina: qué leches podemos ocupar en nuestro kéfir" width="900" height="899" loading="lazy"></a><figcaption>Qué leches podemos ocupar en nuestro kéfir.</figcaption></figure>
     </div>
+    <a class="volver" href="#menu">↑ Volver al menú</a>
   </section>
 
   <div class="cierre">
@@ -310,6 +360,25 @@ footer p{margin:4px auto;max-width:560px}
   <p>Contenido basado en las recomendaciones que Sol comparte con la comunidad.</p>
   <p>Esta guía es informativa y no reemplaza el consejo de un profesional de la salud.</p>
 </footer>
+
+<a class="flotante" id="flotante" href="#menu" aria-label="Volver al menú"><span><b>↑</b>Menú</span></a>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var els=document.querySelectorAll('main section, .cierre');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visto');io.unobserve(e.target);}});},{threshold:.06});
+    els.forEach(function(el){el.classList.add('aparece');io.observe(el);});
+  }
+  var f=document.getElementById('flotante'),m=document.getElementById('menu');
+  function rev(){f.classList.toggle('ver',m.getBoundingClientRect().bottom<0);}
+  window.addEventListener('scroll',rev,{passive:true});rev();
+  // Si se llega por enlace directo a una sección, mostrarla de inmediato
+  if(location.hash){var t=document.querySelector(location.hash);if(t)t.classList.add('visto');}
+  window.addEventListener('hashchange',function(){var t=document.querySelector(location.hash);if(t)t.classList.add('visto');});
+})();
+</script>
 
 </body>
 </html>
