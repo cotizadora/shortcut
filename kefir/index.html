@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kefir de Leche Chile | Guía de cuidados del grupo</title>
+<meta name="description" content="Guía de cuidados, recomendaciones y preguntas frecuentes hecha exclusivamente para el grupo Kefir de Leche Chile.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kefir de Leche Chile">
+<meta property="og:title" content="Kefir de Leche Chile | Guía de cuidados del grupo">
+<meta property="og:description" content="Cuidados, leches recomendadas y preguntas frecuentes. Hecha exclusivamente para nuestro grupo.">
+<meta property="og:url" content="https://cotizadora.github.io/shortcut/kefir/">
+<meta property="og:image" content="https://cotizadora.github.io/shortcut/kefir/img/og.jpg">
+<meta property="og:image:secure_url" content="https://cotizadora.github.io/shortcut/kefir/img/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="Logo del grupo Kefir de Leche Chile">
+<meta property="og:locale" content="es_CL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cotizadora.github.io/shortcut/kefir/img/og.jpg">
+<link rel="icon" type="image/png" href="img/logo_256.png">
+<link rel="apple-touch-icon" href="img/logo_256.png">
+<meta name="theme-color" content="#3b4558">
+<style>
+:root{
+  --azul:#3b4558; --azul-osc:#2a3242; --crema:#e9e4d8; --crema-osc:#cfc8b8;
+  --leche:#faf8f3; --tinta:#2b3140; --suave:#667085; --verde:#1fa855; --verde-osc:#178a45;
+  --rojo:#c0392b; --borde:#e3ddcf;
+  --titulo:"Cooper Black","Cooper Std Black","Bookman Old Style",Georgia,"Times New Roman",serif;
+  --texto:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--leche);color:var(--tinta);font:17px/1.6 var(--texto);-webkit-text-size-adjust:100%}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--azul)}
+
+/* Barra fija */
+.barra{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--borde);box-shadow:0 2px 12px rgba(43,49,64,.08)}
+.barra-in{max-width:860px;margin:0 auto;padding:8px 14px;display:flex;align-items:center;gap:10px}
+.barra img{width:46px;height:46px;border-radius:50%;border:1px solid var(--borde);flex:none}
+.barra .nombre{font-family:var(--titulo);font-weight:900;font-style:italic;color:var(--azul);font-size:17px;line-height:1.1;flex:1;min-width:0}
+.barra .nombre small{display:block;font:500 11px/1.3 var(--texto);font-style:normal;color:var(--suave)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--verde);color:#fff;text-decoration:none;
+  font-weight:700;border-radius:999px;padding:10px 16px;font-size:15px;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(31,168,85,.35)}
+.btn:active{background:var(--verde-osc)}
+.btn svg{width:20px;height:20px;fill:#fff;flex:none}
+.btn.grande{font-size:18px;padding:14px 26px}
+
+/* Portada */
+.portada{background:linear-gradient(180deg,#fff 0%,#fff 55%,var(--crema) 100%);text-align:center;padding:10px 16px 34px;
+  border-bottom:6px solid var(--azul)}
+.portada img.logo{width:min(440px,92%);margin:0 auto;mix-blend-mode:multiply}
+.portada h1{font-family:var(--titulo);font-style:italic;font-weight:900;color:var(--azul);font-size:clamp(24px,6vw,36px);margin:4px 0 6px;line-height:1.15}
+.portada p{max-width:560px;margin:0 auto 18px;color:#4a5265}
+.sello{display:inline-block;background:var(--azul);color:#fff;border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600;margin-bottom:14px}
+
+main{max-width:860px;margin:0 auto;padding:6px 16px 40px}
+section{margin-top:34px}
+h2{font-family:var(--titulo);font-style:italic;font-weight:900;color:var(--azul);font-size:26px;line-height:1.2;margin:0 0 6px}
+h2+p.bajada{margin:0 0 16px;color:var(--suave)}
+h3{color:var(--azul);margin:0 0 4px;font-size:18px}
+
+/* Índice */
+.indice{display:flex;gap:8px;overflow-x:auto;padding:14px 0 4px;-webkit-overflow-scrolling:touch}
+.indice a{flex:none;text-decoration:none;background:#fff;border:1px solid var(--borde);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:600}
+
+.tarjetas{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.tarjeta{background:#fff;border:1px solid var(--borde);border-left:5px solid var(--azul);border-radius:14px;padding:14px 16px}
+.tarjeta p{margin:0;font-size:16px}
+.tarjeta.no{border-left-color:var(--rojo)}
+.tarjeta.si{border-left-color:var(--verde)}
+
+.tiempos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.tiempos div{background:var(--azul);color:#fff;border-radius:14px;padding:14px 8px;text-align:center}
+.tiempos b{display:block;font-family:var(--titulo);font-size:26px;line-height:1.1}
+.tiempos span{font-size:14px;opacity:.92}
+
+.aviso{background:#fff4f2;border:1px solid #f1c8c2;border-left:5px solid var(--rojo);border-radius:14px;padding:16px 18px}
+.aviso h3{color:var(--rojo)}
+.aviso ul{margin:8px 0 0;padding-left:20px}
+.aviso li{margin:4px 0}
+
+.pasos{counter-reset:p;list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.pasos li{counter-increment:p;background:#fff;border:1px solid var(--borde);border-radius:14px;padding:12px 14px 12px 54px;position:relative}
+.pasos li::before{content:counter(p);position:absolute;left:12px;top:11px;width:30px;height:30px;border-radius:50%;
+  background:var(--azul);color:#fff;font-weight:700;display:grid;place-items:center}
+
+figure{margin:16px 0 0;background:#fff;border:1px solid var(--borde);border-radius:14px;overflow:hidden}
+figure img{width:100%}
+figcaption{padding:10px 14px;font-size:14px;color:var(--suave)}
+
+/* Preguntas */
+details{background:#fff;border:1px solid var(--borde);border-radius:14px;margin-bottom:10px;overflow:hidden}
+summary{cursor:pointer;list-style:none;padding:14px 46px 14px 16px;font-weight:700;color:var(--azul);position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:26px;font-weight:400;color:var(--azul)}
+details[open] summary::after{content:"\2212"}
+details[open] summary{border-bottom:1px solid var(--borde);background:var(--crema)}
+details .r{padding:12px 16px 16px}
+details .r p{margin:0 0 8px}
+details .r p:last-child{margin:0}
+details .r ul{margin:4px 0 8px;padding-left:20px}
+
+.galeria{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.galeria figure{margin:0}
+
+.cierre{background:var(--azul);color:#fff;text-align:center;border-radius:18px;padding:28px 18px;margin-top:38px}
+.cierre h2{color:#fff}
+.cierre p{margin:0 0 18px;opacity:.92}
+
+footer{background:var(--azul-osc);color:#d5d9e2;text-align:center;padding:26px 16px 30px;font-size:14px}
+footer img{width:84px;height:84px;border-radius:50%;margin:0 auto 10px;border:3px solid #fff}
+footer b{color:#fff;display:block;font-size:16px;margin-bottom:4px}
+footer p{margin:4px auto;max-width:560px}
+
+@media (max-width:420px){
+  .barra .nombre small{display:none}
+  .btn{padding:9px 13px;font-size:14px}
+  .tiempos b{font-size:22px}
+  .tiempos span{font-size:12.5px}
+}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="barra-in">
+    <img src="img/logo_256.png" alt="Logo Kefir de Leche Chile" width="46" height="46">
+    <div class="nombre">Kefir de Leche Chile<small>Guía de cuidados del grupo</small></div>
+    <a class="btn" href="https://chat.whatsapp.com/L6pE7u0W9Qm99gD9ilRw5o" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.700 6.700 0 0 1-3.300-2.900c-.2-.4.2-.4.600-1.200.1-.2 0-.3 0-.5l-.8-1.900c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.300-.2.300-.9.900-.9 2.200s.9 2.600 1.100 2.700c.1.2 1.900 2.900 4.600 4 1.700.7 2.300.7 3.100.6.500-.1 1.500-.6 1.700-1.200.2-.6.2-1.100.1-1.200 0-.1-.2-.2-.5-.3z"/></svg>
+      Unirme
+    </a>
+  </div>
+</header>
+
+<div class="portada">
+  <img class="logo" src="img/logo_portada.jpg" alt="Kefir de Leche Chile" width="1060" height="775">
+  <span class="sello">Comunidad desde 2020</span>
+  <h1>Guía de cuidados del kéfir de leche</h1>
+  <p>Todo lo que recomendamos en el grupo, ordenado en un solo lugar. Pensada sobre todo para quienes recién empiezan con sus nódulos.</p>
+  <a class="btn grande" href="https://chat.whatsapp.com/L6pE7u0W9Qm99gD9ilRw5o" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+    Unirme al grupo de WhatsApp
+  </a>
+</div>
+
+<main>
+  <nav class="indice" aria-label="Secciones">
+    <a href="#esencial">Lo esencial</a>
+    <a href="#tiempos">Tiempos y cantidad</a>
+    <a href="#leches">Qué leche usar</a>
+    <a href="#sobre">Sobrefermentación</a>
+    <a href="#seguridad">Cuándo botarlo</a>
+    <a href="#preguntas">Preguntas</a>
+    <a href="#material">Material de Sol</a>
+  </nav>
+
+  <section id="esencial">
+    <h2>Lo esencial</h2>
+    <p class="bajada">El resumen de lo más importante. Si recién recibiste tus nódulos, parte por aquí.</p>
+    <div class="tarjetas">
+      <div class="tarjeta si"><h3>Siempre a temperatura ambiente</h3><p>Entre 15 °C y 30 °C los microorganismos se mantienen en óptimas condiciones. Fuera de ese rango algunas cepas desaparecen.</p></div>
+      <div class="tarjeta no"><h3>No se refrigeran ni se congelan</h3><p>Con el frío mueren los microorganismos menos resistentes y no se recuperan.</p></div>
+      <div class="tarjeta no"><h3>No se lavan nunca</h3><p>Si por algún motivo hiciera falta, jamás con agua de la llave: el cloro mata las bacterias del kéfir.</p></div>
+      <div class="tarjeta si"><h3>Siempre en leche</h3><p>Los nódulos viven en leche. No se cambia su medio por agua ni por bebidas vegetales.</p></div>
+      <div class="tarjeta si"><h3>Frasco tapado</h3><p>El kéfir no necesita oxígeno. Solo deja libre cerca de un 25% del frasco por el gas que se genera.</p></div>
+      <div class="tarjeta"><h3>Utensilios</h3><p>Se recomienda evitar el metal. El acero inoxidable de buena calidad no da problemas, pero ante la duda es mejor no usarlo.</p></div>
+      <div class="tarjeta si"><h3>Leche poco procesada</h3><p>Puede ser de cualquier mamífero, lo menos procesada posible y sin agregados.</p></div>
+    </div>
+  </section>
+
+  <section id="tiempos">
+    <h2>Tiempos y cantidad</h2>
+    <p class="bajada">Cada cuánto cambiar la leche y cuántos nódulos usar.</p>
+    <div class="tiempos">
+      <div><b>12 h</b><span>efecto laxante</span></div>
+      <div><b>24 h</b><span>efecto neutro</span></div>
+      <div><b>36 h</b><span>tránsito lento</span></div>
+    </div>
+    <div class="tarjetas" style="margin-top:12px">
+      <div class="tarjeta"><h3>Proporción</h3><p>150 gramos de nódulos por 1 litro de leche. Si hace mucho calor, se puede bajar a 100 gramos.</p></div>
+      <div class="tarjeta"><h3>Cuándo está listo</h3><p>Cuando aparecen algunos hilitos de suero, líneas y burbujas. Se revuelve para unir suero y cuajada, y se cuela. Eso es el kéfir.</p></div>
+    </div>
+  </section>
+
+  <section id="leches">
+    <h2>Qué leche usar</h2>
+    <p class="bajada">El kéfir se alimenta de la lactosa, y eso define qué leches le sirven.</p>
+    <div class="tarjetas">
+      <div class="tarjeta si"><h3>La mejor: leche fresca</h3><p>De vaca, de cabra o de otro mamífero. Mientras menos procesada, mejor. En el grupo suelen funcionar bien las leches enteras no reconstituidas.</p></div>
+      <div class="tarjeta"><h3>Entera, semidescremada o descremada</h3><p>La diferencia está en la grasa, no en la lactosa, así que todas sirven. Con descremada el resultado puede quedar algo más líquido y más ácido.</p></div>
+      <div class="tarjeta no"><h3>Sin lactosa: no se recomienda</h3><p>A esa leche se le agrega lactasa, la enzima que rompe la lactosa. El kéfir ya contiene lactasa y hace ese mismo trabajo, así que no es necesaria y es poco natural para los nódulos.</p></div>
+      <div class="tarjeta"><h3>Leche en polvo: con cuidado</h3><p>Cuesta encontrar una que sirva. Debe ser realmente leche de vaca y no "bebida láctea", sin agregados. Se prepara con agua sin cloro, con un par de medidas extra, y se pone a los nódulos ya fría.</p></div>
+    </div>
+    <p style="margin-top:12px;font-size:15px;color:var(--suave)">Si eres intolerante a la lactosa: empieza de a poco, deja fermentar entre 24 y 36 horas y, ante cualquier duda, consulta con tu médico.</p>
+  </section>
+
+  <section id="sobre">
+    <h2>Sobrefermentación</h2>
+    <p class="bajada">Un poco de suero es normal. Mucho suero separado de la cuajada indica que el cultivo se pasó.</p>
+    <figure>
+      <img src="img/sobrefermentacion.jpg" alt="Comparación: a la izquierda un frasco sobrefermentado con mucho suero separado, a la derecha una fermentación terminada correctamente" width="885" height="810" loading="lazy">
+      <figcaption>A la izquierda, sobrefermentación. A la derecha, fermentación terminada. Imagen compartida por Sol (@yaroslavafermentos).</figcaption>
+    </figure>
+    <p style="margin:16px 0 0">Suele ocurrir por mucho tiempo, mucho calor o demasiados nódulos para la cantidad de leche. Ten en cuenta que los nódulos crecen: si nunca has retirado, probablemente tienes más que antes. Para corregirlo:</p>
+    <ol class="pasos">
+      <li>Reduce los nódulos prácticamente a la mitad.</li>
+      <li>Usa más leche.</li>
+      <li>Deja el frasco en el lugar más fresco de la casa, lejos de la estufa.</li>
+      <li>Revisa a las 12 horas. Si está listo, cuélalo. Si aún no tiene suero y se nota que le falta, déjalo hasta las 24 horas, pero no más.</li>
+      <li>Usa una leche lo menos adulterada posible.</li>
+    </ol>
+    <p style="margin-top:14px;font-size:15px;color:var(--suave)">La primera vez es normal que pase. Los nódulos sienten el cambio de casa, de leche, de frasco y hasta del aire. Por lo general después se adaptan.</p>
+  </section>
+
+  <section id="seguridad">
+    <h2>Cuándo hay que botarlo</h2>
+    <p class="bajada">En este grupo se privilegia el buen cultivo, el buen cuidado y la seguridad alimentaria.</p>
+    <div class="aviso">
+      <h3>Un cultivo dañado no se revive</h3>
+      <p style="margin:6px 0 0">Si ocurre algo de lo siguiente, se bota todo, se desinfecta el frasco y se consiguen nódulos sanos y activos:</p>
+      <ul>
+        <li>Estuvo abandonado varios días sin colar. Pasadas las 48 horas el cultivo ya sufre cambios.</li>
+        <li>Tiene capas o una nata en la superficie, por ejemplo amarilla. Es señal de contaminación, sin importar el olor.</li>
+        <li>Huele a vinagre o a queso. Significa que otras bacterias se apoderaron del cultivo y dejó de ser kéfir.</li>
+      </ul>
+      <p style="margin:10px 0 0">No todas las contaminaciones se ven a simple vista, y no basta con que no huela a podrido. Hacer bien el proceso después no elimina la contaminación: aunque parezca que los nódulos fermentan y reviven, su composición ya es otra. Con las bacterias no se juega.</p>
+    </div>
+  </section>
+
+  <section id="preguntas">
+    <h2>Preguntas y respuestas</h2>
+    <p class="bajada">Las dudas que más se repiten en el grupo.</p>
+
+    <details><summary>¿El kéfir es lo mismo que el yogurt?</summary><div class="r">
+      <p>No. Son fermentos distintos. El yogurt necesita calor para fermentar y en él intervienen solo dos tipos de bacterias. El kéfir fermenta a temperatura ambiente y en él participan entre 11 y 25 cepas de bacterias, además de tres o cuatro levaduras probióticas.</p></div></details>
+
+    <details><summary>Mi kéfir "se corta". ¿Está malo?</summary><div class="r">
+      <p>No necesariamente. El kéfir es leche fermentada, y la señal de que está listo es justamente que aparezcan suero, líneas y burbujas. Se revuelve para unir suero y cuajada, y se cuela.</p>
+      <p>Lo que no está bien es que se separe mucho suero. Eso es sobrefermentación y se corrige ajustando tiempo, temperatura y cantidad de nódulos.</p></div></details>
+
+    <details><summary>Me regalaron nódulos y la primera vez quedó puro suero. ¿Qué hice mal?</summary><div class="r">
+      <p>Probablemente nada. La primera vez suele pasar porque los nódulos resienten el cambio de casa, de leche y de ambiente. Normalmente se adaptan. Si se repite siempre, sigue los pasos de la sección de sobrefermentación.</p></div></details>
+
+    <details><summary>¿Cuántos nódulos uso por litro?</summary><div class="r">
+      <p>150 gramos por 1 litro de leche. Con temperaturas muy altas se puede bajar a 100 gramos.</p></div></details>
+
+    <details><summary>¿Cada cuánto cambio la leche?</summary><div class="r">
+      <p>Depende del efecto que busques: 12 horas da un efecto laxante, 24 horas un efecto neutro y 36 horas favorece un tránsito más lento. Lo habitual es cada 24 horas. En días de calor fermenta más rápido, así que conviene revisar antes.</p></div></details>
+
+    <details><summary>¿Puedo guardarlos en el refrigerador o congelarlos?</summary><div class="r">
+      <p>No. Con el frío mueren los microorganismos menos resistentes y no se recuperan. Los nódulos van siempre a temperatura ambiente, entre 15 °C y 30 °C.</p></div></details>
+
+    <details><summary>¿Tengo que lavar los nódulos?</summary><div class="r">
+      <p>No, nunca. Y si por algún motivo lo necesitaran, jamás con agua de la llave, porque el cloro mata las bacterias del kéfir.</p></div></details>
+
+    <details><summary>¿El frasco va tapado o destapado?</summary><div class="r">
+      <p>Tapado. El kéfir no necesita oxígeno. Solo hay que dejar vacío cerca de un 25% del frasco por el gas que se genera.</p></div></details>
+
+    <details><summary>¿Puedo usar colador o cuchara de metal?</summary><div class="r">
+      <p>Se recomienda evitar los utensilios metálicos. Con acero inoxidable de buena calidad no hay problema, pero ante la duda es mejor usar otro material.</p></div></details>
+
+    <details><summary>¿Sirve la leche sin lactosa?</summary><div class="r">
+      <p>No se recomienda. El kéfir se alimenta de lactosa y él mismo contiene lactasa, la enzima que la descompone. Si eres intolerante, empieza de a poco, fermenta entre 24 y 36 horas y consulta con tu médico ante cualquier duda.</p></div></details>
+
+    <details><summary>¿Y la leche descremada o en polvo?</summary><div class="r">
+      <p>La descremada y la semidescremada sirven, aunque el kéfir puede quedar más líquido y más ácido.</p>
+      <p>La leche en polvo es difícil: tiene que ser leche de vaca real, sin agregados y no "bebida láctea". Se prepara con agua sin cloro, con un par de medidas extra, y se agrega a los nódulos ya fría.</p></div></details>
+
+    <details><summary>¿Puedo ponerlos en agua o en bebida vegetal?</summary><div class="r">
+      <p>No. Los nódulos de kéfir de leche deben estar siempre en leche.</p></div></details>
+
+    <details><summary>Dejé los nódulos varios días sin colar. ¿Los puedo recuperar?</summary><div class="r">
+      <p>No. Un cultivo abandonado por varios días se bota completo y el frasco se desinfecta. Aunque después parezca que vuelve a fermentar, ya no es un kéfir seguro.</p></div></details>
+
+    <details><summary>Tiene una nata o capa arriba, pero no huele mal. ¿Sirve?</summary><div class="r">
+      <p>No. Las capas son señal de contaminación sin importar el olor. Pueden ser levaduras, hongos, mohos u otras bacterias, y a simple vista no se puede saber cuáles. Incluso cuando no son dañinas, el kéfir original ya se perdió. Esos cultivos después "caen mal" y provocan gases u otras molestias.</p></div></details>
+
+    <details><summary>Huele a vinagre o a queso. ¿Es normal?</summary><div class="r">
+      <p>No. El kéfir es una simbiosis de bacterias y levaduras en proporciones definidas. El olor a vinagre indica que se llenó de bacterias acéticas, y el olor a queso que predominan bacterias propias de los quesos. En ambos casos dejó de ser kéfir y lo recomendado es botarlo y conseguir un cultivo sano.</p></div></details>
+
+    <details><summary>¿Cómo consigo nódulos?</summary><div class="r">
+      <p>Pídelos en el grupo indicando tu comuna o ciudad. Los integrantes los comparten o los intercambian, muchas veces por un litro de leche.</p></div></details>
+  </section>
+
+  <section id="material">
+    <h2>Material original de Sol</h2>
+    <p class="bajada">Las láminas que Sol comparte en el grupo y que dieron origen a esta guía. Crédito: @yaroslavafermentos.</p>
+    <div class="galeria">
+      <figure><a href="img/cuidados.jpg" target="_blank" rel="noopener"><img src="img/cuidados.jpg" alt="Lámina: los correctos cuidados del kéfir de leche" width="1186" height="1599" loading="lazy"></a><figcaption>Los correctos cuidados del kéfir de leche (el resumen verde).</figcaption></figure>
+      <figure><a href="img/leches.jpg" target="_blank" rel="noopener"><img src="img/leches.jpg" alt="Lámina: qué leches podemos ocupar en nuestro kéfir" width="900" height="899" loading="lazy"></a><figcaption>Qué leches podemos ocupar en nuestro kéfir.</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="cierre">
+    <h2>¿Aún no estás en el grupo?</h2>
+    <p>Resolvemos dudas, compartimos nódulos y cuidamos el buen cultivo entre todos.</p>
+    <a class="btn grande" href="https://chat.whatsapp.com/L6pE7u0W9Qm99gD9ilRw5o" target="_blank" rel="noopener">Unirme a Kefir de Leche Chile</a>
+  </div>
+</main>
+
+<footer>
+  <img src="img/logo_256.png" alt="Logo Kefir de Leche Chile" width="84" height="84" loading="lazy">
+  <b>Hecho exclusivamente para el grupo Kefir de Leche Chile</b>
+  <p>Contenido basado en las recomendaciones que Sol comparte con la comunidad.</p>
+  <p>Esta guía es informativa y no reemplaza el consejo de un profesional de la salud.</p>
+</footer>
+
+</body>
+</html>
